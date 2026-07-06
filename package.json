@@ -1,0 +1,11 @@
+{
+  "name": "money-planet-site",
+  "private": true,
+  "version": "0.2.0",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.js",
+    "validate": "node scripts/validate.js",
+    "dev": "node scripts/dev.js"
+  }
+}
