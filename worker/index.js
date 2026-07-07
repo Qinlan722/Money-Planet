@@ -1,3 +1,6 @@
+import { treasureCoinHuntMeta } from "../games/coin-island/treasure-coin-hunt/meta.js";
+import { renderTreasureHuntBody } from "../games/coin-island/treasure-coin-hunt/page.js";
+
 const planets = [
   {
     id: "coin-island",
@@ -198,45 +201,7 @@ const playableGames = [
     instructions: "看看这是什么？它是收入、消费，还是储蓄？点对篮子，帮米米把它分类吧！",
     badgeZh: "认识货币小达人徽章",
   },
-  {
-    id: "treasure-coin-hunt",
-    planetId: "coin-island",
-    kind: "run",
-    titleZh: "寻宝金币跑",
-    titleEn: "Treasure Coin Hunt",
-    instructions:
-      "用←→方向键（或点击左右按钮）在硬币岛上奔跑，捡起金币、纸币和银行卡。小心，巧克力和玩具不是钱哦！到达终点后，想想要花掉多少、留下多少——存下一点点，就能拿到「存钱小达人」徽章。",
-    badgeZh: "存钱小达人徽章",
-  },
-];
-
-const treasureHuntItemTypes = {
-  coin: { icon: "🪙", isMoney: true, value: 1 },
-  bill: { icon: "💵", isMoney: true, value: 5 },
-  card: { icon: "💳", isMoney: true, value: 10 },
-  choco: { icon: "🍫", isMoney: false, missText: "这不是钱哦，是巧克力！That's chocolate, not money!" },
-  toy: { icon: "🧸", isMoney: false, missText: "这不是钱哦，是玩具！That's a toy, not money!" },
-  candy: { icon: "🍭", isMoney: false, missText: "这不是钱哦，是糖果！That's candy, not money!" },
-  yoyo: { icon: "🪀", isMoney: false, missText: "这不是钱哦，是溜溜球！That's a yo-yo, not money!" },
-};
-
-const treasureHuntPattern = [
-  "coin", "coin", "choco", "bill", "coin", "toy", "coin", "card",
-  "candy", "coin", "bill", "coin", "choco", "card", "coin", "toy",
-  "bill", "coin", "candy", "coin",
-];
-
-const treasureHuntItems = treasureHuntPattern.map((type, index) => ({
-  x: 220 + index * 95,
-  ...treasureHuntItemTypes[type],
-}));
-
-const treasureHuntShopItems = [
-  { icon: "🧁", labelZh: "纸杯蛋糕", labelEn: "Cupcake", price: 5 },
-  { icon: "📘", labelZh: "故事书", labelEn: "Storybook", price: 8 },
-  { icon: "🪁", labelZh: "风筝", labelEn: "Kite", price: 10 },
-  { icon: "🚗", labelZh: "玩具车", labelEn: "Toy Car", price: 15 },
-  { icon: "🎨", labelZh: "画画套装", labelEn: "Paint Set", price: 20 },
+  treasureCoinHuntMeta,
 ];
 
 const lessons = [
@@ -907,14 +872,6 @@ function moneyMatchDataJson() {
   return JSON.stringify(moneyMatchItems).replace(/</g, "\\u003c");
 }
 
-function treasureHuntItemsJson() {
-  return JSON.stringify(treasureHuntItems).replace(/</g, "\\u003c");
-}
-
-function treasureHuntShopItemsJson() {
-  return JSON.stringify(treasureHuntShopItems).replace(/</g, "\\u003c");
-}
-
 function renderGamePage(gameId) {
   const game = playableGames.find((item) => item.id === gameId);
 
@@ -925,7 +882,7 @@ function renderGamePage(gameId) {
   const planet = planets.find((item) => item.id === game.planetId);
 
   if (game.kind === "run") {
-    return renderTreasureHuntGame(game, planet);
+    return pageShell({ title: game.titleZh, active: "games", body: renderTreasureHuntBody(game, planet) });
   }
 
   return renderMoneyMatchGame(game, planet);
@@ -1104,343 +1061,6 @@ function renderMoneyMatchGame(game, planet) {
 
           updateBadgeUI();
           startRound();
-        })();
-      </script>
-    `,
-  });
-}
-
-function renderTreasureHuntGame(game, planet) {
-  return pageShell({
-    title: game.titleZh,
-    active: "games",
-    body: `
-      <section class="page-section compact-page game-page">
-        <a class="back-link" href="/explore?level=beginner#${planet.id}">← 返回${planet.zh} Back to ${planet.name}</a>
-        <div class="game-hero ${planet.color}">
-          <p>${planet.zh} · ${planet.name}</p>
-          <h1>${game.titleZh}</h1>
-          <p class="english-note">${game.titleEn}</p>
-          <p class="game-instructions">${game.instructions}</p>
-        </div>
-
-        <div class="tch-root" id="tch-root" data-game="${game.id}">
-          <div class="tch-hud" id="tch-hud">
-            <span>金币 Coins: <strong id="tch-coins">0</strong></span>
-            <span>进度 Progress: <strong id="tch-progress">0%</strong></span>
-          </div>
-
-          <div class="tch-stage-wrap" id="tch-stage-wrap">
-            <canvas id="tch-canvas" width="640" height="260"></canvas>
-            <div class="tch-toast" id="tch-toast"></div>
-          </div>
-
-          <div class="tch-controls" id="tch-controls">
-            <button type="button" class="tch-btn" id="tch-left" aria-label="向左移动 Move left">◀</button>
-            <button type="button" class="tch-btn" id="tch-right" aria-label="向右移动 Move right">▶</button>
-          </div>
-          <p class="tch-hint" id="tch-hint">用键盘←→或点击上面的按钮左右移动，捡起金币、纸币和银行卡，避开巧克力和玩具——它们不是钱哦！</p>
-
-          <div class="tch-panel" id="tch-shop" hidden>
-            <h2>到站啦！硬币岛小商店 Coin Shop</h2>
-            <p>你一共收集了 <strong id="tch-shop-coins">0</strong> 枚金币。想买点什么，还是留着以后用？</p>
-            <div class="tch-shop-items" id="tch-shop-items"></div>
-            <p class="tch-wallet">剩余金币 Remaining: <strong id="tch-wallet">0</strong></p>
-            <div class="hero-actions center-actions">
-              <button type="button" class="button primary" id="tch-finish">完成 Finish</button>
-            </div>
-          </div>
-
-          <div class="tch-panel" id="tch-result" hidden>
-            <h2 id="tch-result-title"></h2>
-            <p id="tch-result-text"></p>
-            <div class="hero-actions center-actions">
-              <button type="button" class="button primary" id="tch-retry">再试一次 Try Again</button>
-              <a class="button secondary" href="/explore?level=beginner#${planet.id}">返回${planet.zh} Back to Planet</a>
-            </div>
-          </div>
-        </div>
-      </section>
-      <script>
-        (function () {
-          var items = ${treasureHuntItemsJson()};
-          var shopItems = ${treasureHuntShopItemsJson()};
-          var WORLD_WIDTH = 2300;
-          var FINISH_X = 2180;
-          var GROUND_Y = 190;
-          var STORAGE_BADGE = "mp_badge_treasure_hunt";
-
-          var canvas = document.getElementById("tch-canvas");
-          var ctx = canvas.getContext("2d");
-          var toastEl = document.getElementById("tch-toast");
-          var toastTimer = null;
-
-          var hudEl = document.getElementById("tch-hud");
-          var stageWrapEl = document.getElementById("tch-stage-wrap");
-          var controlsEl = document.getElementById("tch-controls");
-          var hintEl = document.getElementById("tch-hint");
-          var coinsEl = document.getElementById("tch-coins");
-          var progressEl = document.getElementById("tch-progress");
-
-          var shopPanel = document.getElementById("tch-shop");
-          var shopCoinsEl = document.getElementById("tch-shop-coins");
-          var shopItemsEl = document.getElementById("tch-shop-items");
-          var walletEl = document.getElementById("tch-wallet");
-          var finishBtn = document.getElementById("tch-finish");
-
-          var resultPanel = document.getElementById("tch-result");
-          var resultTitleEl = document.getElementById("tch-result-title");
-          var resultTextEl = document.getElementById("tch-result-text");
-          var retryBtn = document.getElementById("tch-retry");
-
-          var leftBtn = document.getElementById("tch-left");
-          var rightBtn = document.getElementById("tch-right");
-
-          var player = { x: 40, speed: 4.2 };
-          var keys = { left: false, right: false };
-          var cameraX = 0;
-          var coins = 0;
-          var wallet = 0;
-          var runItems = [];
-          var rafId = null;
-          var running = false;
-
-          function clamp(value, min, max) {
-            return Math.max(min, Math.min(max, value));
-          }
-
-          function showToast(message) {
-            toastEl.textContent = message;
-            toastEl.classList.remove("tch-toast-show");
-            void toastEl.offsetWidth;
-            toastEl.classList.add("tch-toast-show");
-            if (toastTimer) window.clearTimeout(toastTimer);
-            toastTimer = window.setTimeout(function () {
-              toastEl.classList.remove("tch-toast-show");
-            }, 1100);
-          }
-
-          function bumpCoins() {
-            coinsEl.textContent = String(coins);
-            coinsEl.classList.remove("tch-bump");
-            void coinsEl.offsetWidth;
-            coinsEl.classList.add("tch-bump");
-          }
-
-          function checkCollisions() {
-            for (var i = 0; i < runItems.length; i++) {
-              var item = runItems[i];
-              if (item.collected) continue;
-              if (Math.abs(player.x - item.x) < 26) {
-                item.collected = true;
-                if (item.isMoney) {
-                  coins += item.value;
-                  bumpCoins();
-                } else {
-                  showToast(item.missText || "这不是钱哦 / That's not money!");
-                }
-              }
-            }
-          }
-
-          function update() {
-            if (keys.left) player.x -= player.speed;
-            if (keys.right) player.x += player.speed;
-            player.x = clamp(player.x, 16, WORLD_WIDTH - 16);
-            cameraX = clamp(player.x - 200, 0, WORLD_WIDTH - canvas.width);
-            checkCollisions();
-
-            var progress = clamp(Math.round((player.x / FINISH_X) * 100), 0, 100);
-            progressEl.textContent = progress + "%";
-
-            if (player.x >= FINISH_X) {
-              finishRun();
-            }
-          }
-
-          function drawScene() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            var sky = ctx.createLinearGradient(0, 0, 0, canvas.height);
-            sky.addColorStop(0, "#eaf8ff");
-            sky.addColorStop(1, "#fffdf5");
-            ctx.fillStyle = sky;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            ctx.fillStyle = "#75dfbd";
-            ctx.fillRect(0, GROUND_Y + 30, canvas.width, canvas.height - GROUND_Y - 30);
-            ctx.fillStyle = "rgba(255,255,255,0.35)";
-            for (var stripe = -40; stripe < canvas.width + 40; stripe += 40) {
-              var stripeX = stripe - (cameraX % 40);
-              ctx.fillRect(stripeX, GROUND_Y + 30, 20, canvas.height - GROUND_Y - 30);
-            }
-
-            var finishScreenX = FINISH_X - cameraX;
-            if (finishScreenX > -40 && finishScreenX < canvas.width + 40) {
-              ctx.font = "34px sans-serif";
-              ctx.textAlign = "center";
-              ctx.fillText("🏁", finishScreenX, GROUND_Y + 10);
-            }
-
-            ctx.font = "28px sans-serif";
-            ctx.textAlign = "center";
-            for (var i = 0; i < runItems.length; i++) {
-              var item = runItems[i];
-              if (item.collected) continue;
-              var screenX = item.x - cameraX;
-              if (screenX < -30 || screenX > canvas.width + 30) continue;
-              ctx.fillText(item.icon, screenX, GROUND_Y);
-            }
-
-            var playerScreenX = player.x - cameraX;
-            ctx.font = "36px sans-serif";
-            ctx.fillText("🧑‍🚀", playerScreenX, GROUND_Y + 6);
-          }
-
-          function loop() {
-            if (!running) return;
-            update();
-            if (!running) return;
-            drawScene();
-            rafId = window.requestAnimationFrame(loop);
-          }
-
-          function renderShopItems() {
-            shopItemsEl.innerHTML = "";
-            shopItems.forEach(function (shopItem, index) {
-              var btn = document.createElement("button");
-              btn.type = "button";
-              btn.className = "tch-shop-item";
-              btn.innerHTML =
-                '<span class="tch-shop-icon">' + shopItem.icon + "</span>" +
-                "<strong>" + shopItem.labelZh + "</strong>" +
-                "<small>" + shopItem.labelEn + "</small>" +
-                '<span class="tch-shop-price">' + shopItem.price + " 金币</span>" +
-                '<span class="tch-shop-count" data-role="count"></span>';
-              btn.dataset.index = String(index);
-              btn.dataset.count = "0";
-              btn.addEventListener("click", function () {
-                if (wallet < shopItem.price) return;
-                wallet -= shopItem.price;
-                btn.dataset.count = String(Number(btn.dataset.count) + 1);
-                updateShopButtons();
-              });
-              shopItemsEl.appendChild(btn);
-            });
-            updateShopButtons();
-          }
-
-          function updateShopButtons() {
-            walletEl.textContent = String(wallet);
-            var buttons = shopItemsEl.querySelectorAll(".tch-shop-item");
-            for (var i = 0; i < buttons.length; i++) {
-              var btn = buttons[i];
-              var index = Number(btn.dataset.index);
-              var price = shopItems[index].price;
-              var count = Number(btn.dataset.count);
-              var countEl = btn.querySelector('[data-role="count"]');
-              countEl.textContent = count > 0 ? "已买 x" + count : "";
-              btn.disabled = wallet < price;
-            }
-          }
-
-          function finishRun() {
-            running = false;
-            if (rafId) window.cancelAnimationFrame(rafId);
-            wallet = coins;
-            stageWrapEl.hidden = true;
-            hudEl.hidden = true;
-            controlsEl.hidden = true;
-            hintEl.hidden = true;
-            shopCoinsEl.textContent = String(coins);
-            renderShopItems();
-            shopPanel.hidden = false;
-          }
-
-          function finishShopping() {
-            shopPanel.hidden = true;
-            if (wallet <= 0) {
-              resultTitleEl.textContent = "任务失败 Mission Failed";
-              resultTextEl.textContent = "金币全部花光啦！下次试着留一点点金币吧，再试一次。";
-            } else {
-              resultTitleEl.textContent = "存钱小达人 Smart Saver";
-              resultTextEl.textContent = "你存下了 " + wallet + " 枚金币，获得「存钱小达人」徽章！";
-              window.localStorage.setItem(STORAGE_BADGE, "1");
-            }
-            resultPanel.hidden = false;
-          }
-
-          function resetGame() {
-            player.x = 40;
-            cameraX = 0;
-            coins = 0;
-            wallet = 0;
-            keys.left = false;
-            keys.right = false;
-            runItems = items.map(function (item) {
-              return {
-                x: item.x,
-                icon: item.icon,
-                isMoney: item.isMoney,
-                value: item.value || 0,
-                missText: item.missText || "",
-                collected: false,
-              };
-            });
-            coinsEl.textContent = "0";
-            progressEl.textContent = "0%";
-            resultPanel.hidden = true;
-            shopPanel.hidden = true;
-            stageWrapEl.hidden = false;
-            hudEl.hidden = false;
-            controlsEl.hidden = false;
-            hintEl.hidden = false;
-            running = true;
-            if (rafId) window.cancelAnimationFrame(rafId);
-            rafId = window.requestAnimationFrame(loop);
-          }
-
-          finishBtn.addEventListener("click", finishShopping);
-          retryBtn.addEventListener("click", resetGame);
-
-          window.addEventListener("keydown", function (event) {
-            if (event.key === "ArrowLeft") {
-              keys.left = true;
-              event.preventDefault();
-            }
-            if (event.key === "ArrowRight") {
-              keys.right = true;
-              event.preventDefault();
-            }
-          });
-          window.addEventListener("keyup", function (event) {
-            if (event.key === "ArrowLeft") keys.left = false;
-            if (event.key === "ArrowRight") keys.right = false;
-          });
-
-          function bindHold(el, onFlag) {
-            var setTrue = function (event) {
-              event.preventDefault();
-              onFlag(true);
-            };
-            var setFalse = function () {
-              onFlag(false);
-            };
-            el.addEventListener("mousedown", setTrue);
-            el.addEventListener("touchstart", setTrue, { passive: false });
-            el.addEventListener("mouseup", setFalse);
-            el.addEventListener("mouseleave", setFalse);
-            el.addEventListener("touchend", setFalse);
-            el.addEventListener("touchcancel", setFalse);
-          }
-          bindHold(leftBtn, function (value) {
-            keys.left = value;
-          });
-          bindHold(rightBtn, function (value) {
-            keys.right = value;
-          });
-
-          resetGame();
         })();
       </script>
     `,
@@ -2169,7 +1789,7 @@ function siteStyles() {
       .tch-hud[hidden] { display: none; }
       .tch-stage-wrap {
         position: relative;
-        max-width: 640px;
+        max-width: 800px;
         margin: 0 auto;
         border-radius: 24px;
         overflow: hidden;
@@ -2177,7 +1797,7 @@ function siteStyles() {
         box-shadow: 0 14px 30px rgba(65, 91, 113, 0.16);
       }
       .tch-stage-wrap[hidden] { display: none; }
-      #tch-canvas { display: block; width: 100%; height: auto; background: #eaf8ff; touch-action: none; }
+      .tch-phaser-root { width: 100%; aspect-ratio: 800 / 300; background: #eaf8ff; touch-action: none; line-height: 0; }
       .tch-toast {
         position: absolute;
         top: 12px;
@@ -2195,6 +1815,7 @@ function siteStyles() {
         transition: opacity 200ms ease, transform 200ms ease;
       }
       .tch-toast-show { opacity: 1; transform: translateX(-50%) translateY(0); }
+      .tch-toast-good { background: var(--mint); box-shadow: 0 10px 22px rgba(117, 223, 189, 0.5); }
       .tch-controls {
         display: flex;
         justify-content: center;
@@ -2216,6 +1837,7 @@ function siteStyles() {
       }
       .tch-btn:hover, .tch-btn:focus-visible { transform: translateY(-3px); outline: none; }
       .tch-btn:active { transform: translateY(1px); }
+      .tch-btn-jump { background: linear-gradient(145deg, var(--yellow), var(--coral)); }
       .tch-hint { margin-top: 14px; font-weight: 700; color: #41515e; }
       .tch-hint[hidden] { display: none; }
       .tch-panel { max-width: 560px; margin: 0 auto; }
