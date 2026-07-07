@@ -68,15 +68,32 @@ const planets = [
 ];
 
 function planetIconSvg(key) {
-  const icons = {
-    coin: `<svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="20" cy="20" r="16" fill="currentColor"/><circle cx="20" cy="20" r="16" fill="none" stroke="#fff" stroke-opacity="0.55" stroke-width="2"/><path d="M20 10.2l2.4 6 6.6.5-5 4.2 1.6 6.3L20 23.8l-5.6 3.4 1.6-6.3-5-4.2 6.6-.5z" fill="#fff"/></svg>`,
-    fork: `<svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="20" cy="20" r="16" fill="currentColor"/><path d="M20 30V20M20 20l-7-8M20 20l7-8" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="13" cy="10.5" r="3.2" fill="#fff"/><circle cx="27" cy="10.5" r="3.2" fill="#fff"/></svg>`,
-    jars: `<svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="20" cy="20" r="16" fill="currentColor"/><rect x="10" y="18" width="5" height="10" rx="1.4" fill="#fff"/><rect x="17.5" y="12.5" width="5" height="15.5" rx="1.4" fill="#fff"/><rect x="25" y="16" width="5" height="12" rx="1.4" fill="#fff"/></svg>`,
-    tag: `<svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="20" cy="20" r="16" fill="currentColor"/><path d="M13.5 12.5h7.6l6.4 6.4-9 9-6.4-6.4z" fill="#fff"/><circle cx="16" cy="15" r="1.5" fill="currentColor"/></svg>`,
-    shop: `<svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="20" cy="20" r="16" fill="currentColor"/><path d="M11 18l2.6-6h12.8l2.6 6" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/><rect x="12" y="18" width="16" height="10" rx="1.4" fill="#fff"/><path d="M16.5 27v-5h3v5M20.5 27v-6.5h3V27" stroke="currentColor" stroke-width="1.5"/></svg>`,
-    rocket: `<svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="20" cy="20" r="16" fill="currentColor"/><path d="M20 9c3.6 3 4.6 7.6 4.6 11.4 0 2-.9 3.8-1.9 4.9l-2.7 2.7-2.7-2.7c-1-1.1-1.9-2.9-1.9-4.9C15.4 16.6 16.4 12 20 9z" fill="#fff"/><circle cx="20" cy="17" r="2" fill="currentColor"/><path d="M15.4 23.5l-2.6 4.5M24.6 23.5l2.6 4.5" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>`,
+  const glyphs = {
+    coin: `<path d="M20 10.4l2.3 5.7 6.3.5-4.8 4 1.5 6.1L20 23.4l-5.3 3.3 1.5-6.1-4.8-4 6.3-.5z" fill="#fff"/>`,
+    fork: `<path d="M20 29V20M20 20l-6.6-7.5M20 20l6.6-7.5" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="13.4" cy="11.2" r="2.8" fill="#fff"/><circle cx="26.6" cy="11.2" r="2.8" fill="#fff"/>`,
+    jars: `<rect x="11" y="18" width="4.4" height="9" rx="1.2" fill="#fff"/><rect x="17.8" y="13" width="4.4" height="14" rx="1.2" fill="#fff"/><rect x="24.6" y="16.5" width="4.4" height="10.5" rx="1.2" fill="#fff"/>`,
+    tag: `<path d="M14 13h7l6 6-8.5 8.5-6-6z" fill="#fff"/><circle cx="16.3" cy="15.3" r="1.3" fill="currentColor"/>`,
+    shop: `<path d="M12 17.5l2.3-5.2h11.4l2.3 5.2" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/><rect x="12.6" y="17.5" width="14.8" height="9.2" rx="1.2" fill="#fff"/><path d="M16.6 26v-4.6h2.6V26M20.8 26v-6h2.6v6" stroke="currentColor" stroke-width="1.3"/>`,
+    rocket: `<path d="M20 10.5c3.2 2.7 4.1 6.8 4.1 10.2 0 1.8-.8 3.4-1.7 4.4l-2.4 2.4-2.4-2.4c-.9-1-1.7-2.6-1.7-4.4 0-3.4.9-7.5 4.1-10.2z" fill="#fff"/><circle cx="20" cy="17.4" r="1.8" fill="currentColor"/><path d="M15.9 23.7l-2.3 4M24.1 23.7l2.3 4" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/>`,
   };
-  return icons[key] || "";
+
+  const glyph = glyphs[key];
+  if (!glyph) return "";
+
+  return `<svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="pg-${key}" cx="33%" cy="26%" r="78%">
+          <stop offset="0%" stop-color="#ffffff" stop-opacity="0.68"/>
+          <stop offset="55%" stop-color="currentColor" stop-opacity="1"/>
+          <stop offset="100%" stop-color="#00131a" stop-opacity="0.32"/>
+        </radialGradient>
+      </defs>
+      <ellipse cx="20" cy="23.5" rx="17" ry="4" fill="none" stroke="#ffffff" stroke-opacity="0.55" stroke-width="1.6" transform="rotate(-9 20 23.5)"/>
+      <circle cx="20" cy="19.5" r="14.5" fill="url(#pg-${key})"/>
+      <circle cx="14" cy="13.5" r="2.1" fill="#ffffff" fill-opacity="0.32"/>
+      <circle cx="25.5" cy="26" r="1.3" fill="#ffffff" fill-opacity="0.24"/>
+      ${glyph}
+    </svg>`;
 }
 
 function mascotSvg() {
@@ -152,6 +169,74 @@ const roadmap = [
     title: "星球建设者社区",
     text: "邀请孩子、家长和老师一起提出新任务，扩展更多学习星球。",
   },
+];
+
+const moneyMatchItems = [
+  { icon: "💰", label: "妈妈给的零花钱", en: "Allowance from Mom", answer: "income" },
+  { icon: "🧧", label: "生日收到的红包", en: "Birthday money", answer: "income" },
+  { icon: "🌼", label: "帮邻居浇花赚的钱", en: "Earned watering a neighbor's plants", answer: "income" },
+  { icon: "🧸", label: "卖旧玩具得到的钱", en: "Sold an old toy", answer: "income" },
+  { icon: "🎁", label: "过年收到的压岁钱", en: "New Year's money", answer: "income" },
+  { icon: "✏️", label: "买一支新铅笔", en: "Bought a new pencil", answer: "spending" },
+  { icon: "🧃", label: "买了一杯果汁", en: "Bought juice", answer: "spending" },
+  { icon: "🎀", label: "买贴纸送朋友", en: "Bought stickers for a friend", answer: "spending" },
+  { icon: "📖", label: "买了一本故事书", en: "Bought a storybook", answer: "spending" },
+  { icon: "🚌", label: "买公交票", en: "Bought a bus ticket", answer: "spending" },
+  { icon: "🐷", label: "把硬币放进储蓄罐", en: "Coins into the piggy bank", answer: "saving" },
+  { icon: "🚲", label: "存起来准备买自行车", en: "Saving up for a bike", answer: "saving" },
+  { icon: "🏦", label: "把压岁钱存进银行", en: "New Year's money into the bank", answer: "saving" },
+  { icon: "🗓️", label: "这周先不花，留到下周", en: "Skipped spending to save for later", answer: "saving" },
+];
+
+const playableGames = [
+  {
+    id: "money-match",
+    planetId: "coin-island",
+    kind: "match",
+    titleZh: "认钱配对",
+    titleEn: "Money Match",
+    instructions: "看看这是什么？它是收入、消费，还是储蓄？点对篮子，帮米米把它分类吧！",
+    badgeZh: "认识货币小达人徽章",
+  },
+  {
+    id: "treasure-coin-hunt",
+    planetId: "coin-island",
+    kind: "run",
+    titleZh: "寻宝金币跑",
+    titleEn: "Treasure Coin Hunt",
+    instructions:
+      "用←→方向键（或点击左右按钮）在硬币岛上奔跑，捡起金币、纸币和银行卡。小心，巧克力和玩具不是钱哦！到达终点后，想想要花掉多少、留下多少——存下一点点，就能拿到「存钱小达人」徽章。",
+    badgeZh: "存钱小达人徽章",
+  },
+];
+
+const treasureHuntItemTypes = {
+  coin: { icon: "🪙", isMoney: true, value: 1 },
+  bill: { icon: "💵", isMoney: true, value: 5 },
+  card: { icon: "💳", isMoney: true, value: 10 },
+  choco: { icon: "🍫", isMoney: false, missText: "这不是钱哦，是巧克力！That's chocolate, not money!" },
+  toy: { icon: "🧸", isMoney: false, missText: "这不是钱哦，是玩具！That's a toy, not money!" },
+  candy: { icon: "🍭", isMoney: false, missText: "这不是钱哦，是糖果！That's candy, not money!" },
+  yoyo: { icon: "🪀", isMoney: false, missText: "这不是钱哦，是溜溜球！That's a yo-yo, not money!" },
+};
+
+const treasureHuntPattern = [
+  "coin", "coin", "choco", "bill", "coin", "toy", "coin", "card",
+  "candy", "coin", "bill", "coin", "choco", "card", "coin", "toy",
+  "bill", "coin", "candy", "coin",
+];
+
+const treasureHuntItems = treasureHuntPattern.map((type, index) => ({
+  x: 220 + index * 95,
+  ...treasureHuntItemTypes[type],
+}));
+
+const treasureHuntShopItems = [
+  { icon: "🧁", labelZh: "纸杯蛋糕", labelEn: "Cupcake", price: 5 },
+  { icon: "📘", labelZh: "故事书", labelEn: "Storybook", price: 8 },
+  { icon: "🪁", labelZh: "风筝", labelEn: "Kite", price: 10 },
+  { icon: "🚗", labelZh: "玩具车", labelEn: "Toy Car", price: 15 },
+  { icon: "🎨", labelZh: "画画套装", labelEn: "Paint Set", price: 20 },
 ];
 
 const lessons = [
@@ -647,7 +732,7 @@ function renderHomePage() {
             <span class="mascot-avatar" role="img" aria-label="星球向导米米">${mascotSvg()}</span>
             <p class="mascot-bubble">你好，我是<strong>米米</strong>，欢迎来到财商星球！跟我一站一站探索吧。</p>
           </div>
-          <p class="pill">中文为主的儿童财商探索站</p>
+          <p class="pill">儿童财商探索站</p>
           <h1>欢迎来到 Money Planet 财商星球</h1>
           <p class="hero-text">
             这里不是银行，也不是投资网站。这里是一张给中文小学生和家庭使用的财商探索地图：
@@ -719,6 +804,27 @@ function lessonCardsForExplore(planetId, selectedLevel) {
     .join("");
 }
 
+function planetGamesForExplore(planetId) {
+  const planetGames = playableGames.filter((game) => game.planetId === planetId);
+
+  if (planetGames.length === 0) {
+    return "";
+  }
+
+  return `
+    <div class="planet-games">
+      <h3>星球游戏 <small>Planet Game</small></h3>
+      ${planetGames
+        .map(
+          (game) => `
+            <a class="button lesson-button" href="/play/${game.id}">🎮 玩${game.titleZh} / Play ${game.titleEn}</a>
+          `,
+        )
+        .join("")}
+    </div>
+  `;
+}
+
 function renderExplorePage(url) {
   const selectedLevel = normalizeLevel(url.searchParams.get("level"));
   const level = levelOptions.find((item) => item.id === selectedLevel);
@@ -751,6 +857,7 @@ function renderExplorePage(url) {
                   <div class="tag-row">
                     ${planet.tags.map((tag) => `<span>${tag}</span>`).join("")}
                   </div>
+                  ${planetGamesForExplore(planet.id)}
                   <div class="planet-lessons">
                     <h3>选择一节任务课 <small>Pick a Lesson</small></h3>
                     ${lessonCardsForExplore(planet.id, selectedLevel)}
@@ -791,6 +898,596 @@ function renderLessonPage(url, lessonId) {
           </div>
         </div>
         ${lessonDetailCard(lesson)}
+      </section>
+    `,
+  });
+}
+
+function moneyMatchDataJson() {
+  return JSON.stringify(moneyMatchItems).replace(/</g, "\\u003c");
+}
+
+function treasureHuntItemsJson() {
+  return JSON.stringify(treasureHuntItems).replace(/</g, "\\u003c");
+}
+
+function treasureHuntShopItemsJson() {
+  return JSON.stringify(treasureHuntShopItems).replace(/</g, "\\u003c");
+}
+
+function renderGamePage(gameId) {
+  const game = playableGames.find((item) => item.id === gameId);
+
+  if (!game) {
+    return renderNotFoundPage();
+  }
+
+  const planet = planets.find((item) => item.id === game.planetId);
+
+  if (game.kind === "run") {
+    return renderTreasureHuntGame(game, planet);
+  }
+
+  return renderMoneyMatchGame(game, planet);
+}
+
+function renderMoneyMatchGame(game, planet) {
+  return pageShell({
+    title: game.titleZh,
+    active: "games",
+    body: `
+      <section class="page-section compact-page game-page">
+        <a class="back-link" href="/explore?level=beginner#${planet.id}">← 返回${planet.zh} Back to ${planet.name}</a>
+        <div class="game-hero ${planet.color}">
+          <p>${planet.zh} · ${planet.name}</p>
+          <h1>${game.titleZh}</h1>
+          <p class="english-note">${game.titleEn}</p>
+          <p class="game-instructions">${game.instructions}</p>
+        </div>
+
+        <div class="money-match" id="mm-root" data-game="${game.id}">
+          <div class="mm-scoreboard">
+            <span>得分 Score: <strong id="mm-score">0</strong>/10</span>
+            <span>最佳 Best: <strong id="mm-best">0</strong>/10</span>
+            <span class="mm-badge-pill" id="mm-badge-pill" hidden>🏅 徽章已获得</span>
+          </div>
+
+          <div class="mm-stage" id="mm-stage">
+            <span class="mm-mascot" role="img" aria-label="星球向导米米">${mascotSvg()}</span>
+            <div class="mm-item-card" id="mm-item-card">
+              <span class="mm-item-icon" id="mm-item-icon">💰</span>
+              <p class="mm-item-label" id="mm-item-label">正在加载…</p>
+            </div>
+          </div>
+
+          <div class="mm-bins" id="mm-bins">
+            <button type="button" class="mm-bin mint" data-answer="income">
+              <span class="mm-bin-icon">💰</span>
+              <strong>收入</strong>
+              <small>Income</small>
+            </button>
+            <button type="button" class="mm-bin coral" data-answer="spending">
+              <span class="mm-bin-icon">🛍️</span>
+              <strong>消费</strong>
+              <small>Spending</small>
+            </button>
+            <button type="button" class="mm-bin blue" data-answer="saving">
+              <span class="mm-bin-icon">🏦</span>
+              <strong>储蓄</strong>
+              <small>Saving</small>
+            </button>
+          </div>
+
+          <div class="mm-result" id="mm-result" hidden>
+            <h2>本轮完成！Round Complete</h2>
+            <p id="mm-result-score">得分 Score: 0/10</p>
+            <p class="mm-badge-earned" id="mm-result-badge" hidden>🏅 ${game.badgeZh}已解锁！</p>
+            <div class="hero-actions center-actions">
+              <button type="button" class="button primary" id="mm-replay">再玩一次 Play Again</button>
+              <a class="button secondary" href="/explore?level=beginner#${planet.id}">返回${planet.zh} Back to Planet</a>
+            </div>
+          </div>
+        </div>
+      </section>
+      <script>
+        (function () {
+          var items = ${moneyMatchDataJson()};
+          var ROUND_LENGTH = 10;
+          var STORAGE_BEST = "mp_money_match_best";
+          var STORAGE_BADGE = "mp_badge_money_match";
+
+          function shuffle(list) {
+            var copy = list.slice();
+            for (var i = copy.length - 1; i > 0; i--) {
+              var j = Math.floor(Math.random() * (i + 1));
+              var tmp = copy[i];
+              copy[i] = copy[j];
+              copy[j] = tmp;
+            }
+            return copy;
+          }
+
+          function bestScore() {
+            return Number(window.localStorage.getItem(STORAGE_BEST) || "0");
+          }
+
+          var round = [];
+          var index = 0;
+          var score = 0;
+          var locked = false;
+
+          var scoreEl = document.getElementById("mm-score");
+          var bestEl = document.getElementById("mm-best");
+          var badgePill = document.getElementById("mm-badge-pill");
+          var iconEl = document.getElementById("mm-item-icon");
+          var labelEl = document.getElementById("mm-item-label");
+          var cardEl = document.getElementById("mm-item-card");
+          var stageEl = document.getElementById("mm-stage");
+          var binsEl = document.getElementById("mm-bins");
+          var resultEl = document.getElementById("mm-result");
+          var resultScoreEl = document.getElementById("mm-result-score");
+          var resultBadgeEl = document.getElementById("mm-result-badge");
+          var replayBtn = document.getElementById("mm-replay");
+          var bins = binsEl.querySelectorAll(".mm-bin");
+
+          function updateBadgeUI() {
+            var earned = window.localStorage.getItem(STORAGE_BADGE) === "1";
+            badgePill.hidden = !earned;
+          }
+
+          function showItem() {
+            var item = round[index];
+            iconEl.textContent = item.icon;
+            labelEl.textContent = item.label;
+            cardEl.classList.remove("mm-correct", "mm-wrong");
+          }
+
+          function startRound() {
+            round = shuffle(items).slice(0, ROUND_LENGTH);
+            index = 0;
+            score = 0;
+            locked = false;
+            resultEl.hidden = true;
+            stageEl.hidden = false;
+            binsEl.hidden = false;
+            scoreEl.textContent = "0";
+            bestEl.textContent = String(bestScore());
+            showItem();
+          }
+
+          function finishRound() {
+            stageEl.hidden = true;
+            binsEl.hidden = true;
+            resultEl.hidden = false;
+            var best = Math.max(score, bestScore());
+            window.localStorage.setItem(STORAGE_BEST, String(best));
+            bestEl.textContent = String(best);
+            resultScoreEl.textContent = "得分 Score: " + score + "/" + ROUND_LENGTH;
+            if (score === ROUND_LENGTH) {
+              window.localStorage.setItem(STORAGE_BADGE, "1");
+              resultBadgeEl.hidden = false;
+              updateBadgeUI();
+            } else {
+              resultBadgeEl.hidden = true;
+            }
+          }
+
+          function handleAnswer(answer) {
+            if (locked) return;
+            locked = true;
+            var item = round[index];
+            var correct = answer === item.answer;
+            if (correct) {
+              score += 1;
+              scoreEl.textContent = String(score);
+              cardEl.classList.add("mm-correct");
+            } else {
+              cardEl.classList.add("mm-wrong");
+            }
+            window.setTimeout(function () {
+              index += 1;
+              if (index >= round.length) {
+                finishRound();
+              } else {
+                showItem();
+                locked = false;
+              }
+            }, 650);
+          }
+
+          for (var i = 0; i < bins.length; i++) {
+            bins[i].addEventListener("click", function (event) {
+              handleAnswer(event.currentTarget.getAttribute("data-answer"));
+            });
+          }
+          replayBtn.addEventListener("click", startRound);
+
+          updateBadgeUI();
+          startRound();
+        })();
+      </script>
+    `,
+  });
+}
+
+function renderTreasureHuntGame(game, planet) {
+  return pageShell({
+    title: game.titleZh,
+    active: "games",
+    body: `
+      <section class="page-section compact-page game-page">
+        <a class="back-link" href="/explore?level=beginner#${planet.id}">← 返回${planet.zh} Back to ${planet.name}</a>
+        <div class="game-hero ${planet.color}">
+          <p>${planet.zh} · ${planet.name}</p>
+          <h1>${game.titleZh}</h1>
+          <p class="english-note">${game.titleEn}</p>
+          <p class="game-instructions">${game.instructions}</p>
+        </div>
+
+        <div class="tch-root" id="tch-root" data-game="${game.id}">
+          <div class="tch-hud" id="tch-hud">
+            <span>金币 Coins: <strong id="tch-coins">0</strong></span>
+            <span>进度 Progress: <strong id="tch-progress">0%</strong></span>
+          </div>
+
+          <div class="tch-stage-wrap" id="tch-stage-wrap">
+            <canvas id="tch-canvas" width="640" height="260"></canvas>
+            <div class="tch-toast" id="tch-toast"></div>
+          </div>
+
+          <div class="tch-controls" id="tch-controls">
+            <button type="button" class="tch-btn" id="tch-left" aria-label="向左移动 Move left">◀</button>
+            <button type="button" class="tch-btn" id="tch-right" aria-label="向右移动 Move right">▶</button>
+          </div>
+          <p class="tch-hint" id="tch-hint">用键盘←→或点击上面的按钮左右移动，捡起金币、纸币和银行卡，避开巧克力和玩具——它们不是钱哦！</p>
+
+          <div class="tch-panel" id="tch-shop" hidden>
+            <h2>到站啦！硬币岛小商店 Coin Shop</h2>
+            <p>你一共收集了 <strong id="tch-shop-coins">0</strong> 枚金币。想买点什么，还是留着以后用？</p>
+            <div class="tch-shop-items" id="tch-shop-items"></div>
+            <p class="tch-wallet">剩余金币 Remaining: <strong id="tch-wallet">0</strong></p>
+            <div class="hero-actions center-actions">
+              <button type="button" class="button primary" id="tch-finish">完成 Finish</button>
+            </div>
+          </div>
+
+          <div class="tch-panel" id="tch-result" hidden>
+            <h2 id="tch-result-title"></h2>
+            <p id="tch-result-text"></p>
+            <div class="hero-actions center-actions">
+              <button type="button" class="button primary" id="tch-retry">再试一次 Try Again</button>
+              <a class="button secondary" href="/explore?level=beginner#${planet.id}">返回${planet.zh} Back to Planet</a>
+            </div>
+          </div>
+        </div>
+      </section>
+      <script>
+        (function () {
+          var items = ${treasureHuntItemsJson()};
+          var shopItems = ${treasureHuntShopItemsJson()};
+          var WORLD_WIDTH = 2300;
+          var FINISH_X = 2180;
+          var GROUND_Y = 190;
+          var STORAGE_BADGE = "mp_badge_treasure_hunt";
+
+          var canvas = document.getElementById("tch-canvas");
+          var ctx = canvas.getContext("2d");
+          var toastEl = document.getElementById("tch-toast");
+          var toastTimer = null;
+
+          var hudEl = document.getElementById("tch-hud");
+          var stageWrapEl = document.getElementById("tch-stage-wrap");
+          var controlsEl = document.getElementById("tch-controls");
+          var hintEl = document.getElementById("tch-hint");
+          var coinsEl = document.getElementById("tch-coins");
+          var progressEl = document.getElementById("tch-progress");
+
+          var shopPanel = document.getElementById("tch-shop");
+          var shopCoinsEl = document.getElementById("tch-shop-coins");
+          var shopItemsEl = document.getElementById("tch-shop-items");
+          var walletEl = document.getElementById("tch-wallet");
+          var finishBtn = document.getElementById("tch-finish");
+
+          var resultPanel = document.getElementById("tch-result");
+          var resultTitleEl = document.getElementById("tch-result-title");
+          var resultTextEl = document.getElementById("tch-result-text");
+          var retryBtn = document.getElementById("tch-retry");
+
+          var leftBtn = document.getElementById("tch-left");
+          var rightBtn = document.getElementById("tch-right");
+
+          var player = { x: 40, speed: 4.2 };
+          var keys = { left: false, right: false };
+          var cameraX = 0;
+          var coins = 0;
+          var wallet = 0;
+          var runItems = [];
+          var rafId = null;
+          var running = false;
+
+          function clamp(value, min, max) {
+            return Math.max(min, Math.min(max, value));
+          }
+
+          function showToast(message) {
+            toastEl.textContent = message;
+            toastEl.classList.remove("tch-toast-show");
+            void toastEl.offsetWidth;
+            toastEl.classList.add("tch-toast-show");
+            if (toastTimer) window.clearTimeout(toastTimer);
+            toastTimer = window.setTimeout(function () {
+              toastEl.classList.remove("tch-toast-show");
+            }, 1100);
+          }
+
+          function bumpCoins() {
+            coinsEl.textContent = String(coins);
+            coinsEl.classList.remove("tch-bump");
+            void coinsEl.offsetWidth;
+            coinsEl.classList.add("tch-bump");
+          }
+
+          function checkCollisions() {
+            for (var i = 0; i < runItems.length; i++) {
+              var item = runItems[i];
+              if (item.collected) continue;
+              if (Math.abs(player.x - item.x) < 26) {
+                item.collected = true;
+                if (item.isMoney) {
+                  coins += item.value;
+                  bumpCoins();
+                } else {
+                  showToast(item.missText || "这不是钱哦 / That's not money!");
+                }
+              }
+            }
+          }
+
+          function update() {
+            if (keys.left) player.x -= player.speed;
+            if (keys.right) player.x += player.speed;
+            player.x = clamp(player.x, 16, WORLD_WIDTH - 16);
+            cameraX = clamp(player.x - 200, 0, WORLD_WIDTH - canvas.width);
+            checkCollisions();
+
+            var progress = clamp(Math.round((player.x / FINISH_X) * 100), 0, 100);
+            progressEl.textContent = progress + "%";
+
+            if (player.x >= FINISH_X) {
+              finishRun();
+            }
+          }
+
+          function drawScene() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            var sky = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            sky.addColorStop(0, "#eaf8ff");
+            sky.addColorStop(1, "#fffdf5");
+            ctx.fillStyle = sky;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = "#75dfbd";
+            ctx.fillRect(0, GROUND_Y + 30, canvas.width, canvas.height - GROUND_Y - 30);
+            ctx.fillStyle = "rgba(255,255,255,0.35)";
+            for (var stripe = -40; stripe < canvas.width + 40; stripe += 40) {
+              var stripeX = stripe - (cameraX % 40);
+              ctx.fillRect(stripeX, GROUND_Y + 30, 20, canvas.height - GROUND_Y - 30);
+            }
+
+            var finishScreenX = FINISH_X - cameraX;
+            if (finishScreenX > -40 && finishScreenX < canvas.width + 40) {
+              ctx.font = "34px sans-serif";
+              ctx.textAlign = "center";
+              ctx.fillText("🏁", finishScreenX, GROUND_Y + 10);
+            }
+
+            ctx.font = "28px sans-serif";
+            ctx.textAlign = "center";
+            for (var i = 0; i < runItems.length; i++) {
+              var item = runItems[i];
+              if (item.collected) continue;
+              var screenX = item.x - cameraX;
+              if (screenX < -30 || screenX > canvas.width + 30) continue;
+              ctx.fillText(item.icon, screenX, GROUND_Y);
+            }
+
+            var playerScreenX = player.x - cameraX;
+            ctx.font = "36px sans-serif";
+            ctx.fillText("🧑‍🚀", playerScreenX, GROUND_Y + 6);
+          }
+
+          function loop() {
+            if (!running) return;
+            update();
+            if (!running) return;
+            drawScene();
+            rafId = window.requestAnimationFrame(loop);
+          }
+
+          function renderShopItems() {
+            shopItemsEl.innerHTML = "";
+            shopItems.forEach(function (shopItem, index) {
+              var btn = document.createElement("button");
+              btn.type = "button";
+              btn.className = "tch-shop-item";
+              btn.innerHTML =
+                '<span class="tch-shop-icon">' + shopItem.icon + "</span>" +
+                "<strong>" + shopItem.labelZh + "</strong>" +
+                "<small>" + shopItem.labelEn + "</small>" +
+                '<span class="tch-shop-price">' + shopItem.price + " 金币</span>" +
+                '<span class="tch-shop-count" data-role="count"></span>';
+              btn.dataset.index = String(index);
+              btn.dataset.count = "0";
+              btn.addEventListener("click", function () {
+                if (wallet < shopItem.price) return;
+                wallet -= shopItem.price;
+                btn.dataset.count = String(Number(btn.dataset.count) + 1);
+                updateShopButtons();
+              });
+              shopItemsEl.appendChild(btn);
+            });
+            updateShopButtons();
+          }
+
+          function updateShopButtons() {
+            walletEl.textContent = String(wallet);
+            var buttons = shopItemsEl.querySelectorAll(".tch-shop-item");
+            for (var i = 0; i < buttons.length; i++) {
+              var btn = buttons[i];
+              var index = Number(btn.dataset.index);
+              var price = shopItems[index].price;
+              var count = Number(btn.dataset.count);
+              var countEl = btn.querySelector('[data-role="count"]');
+              countEl.textContent = count > 0 ? "已买 x" + count : "";
+              btn.disabled = wallet < price;
+            }
+          }
+
+          function finishRun() {
+            running = false;
+            if (rafId) window.cancelAnimationFrame(rafId);
+            wallet = coins;
+            stageWrapEl.hidden = true;
+            hudEl.hidden = true;
+            controlsEl.hidden = true;
+            hintEl.hidden = true;
+            shopCoinsEl.textContent = String(coins);
+            renderShopItems();
+            shopPanel.hidden = false;
+          }
+
+          function finishShopping() {
+            shopPanel.hidden = true;
+            if (wallet <= 0) {
+              resultTitleEl.textContent = "任务失败 Mission Failed";
+              resultTextEl.textContent = "金币全部花光啦！下次试着留一点点金币吧，再试一次。";
+            } else {
+              resultTitleEl.textContent = "存钱小达人 Smart Saver";
+              resultTextEl.textContent = "你存下了 " + wallet + " 枚金币，获得「存钱小达人」徽章！";
+              window.localStorage.setItem(STORAGE_BADGE, "1");
+            }
+            resultPanel.hidden = false;
+          }
+
+          function resetGame() {
+            player.x = 40;
+            cameraX = 0;
+            coins = 0;
+            wallet = 0;
+            keys.left = false;
+            keys.right = false;
+            runItems = items.map(function (item) {
+              return {
+                x: item.x,
+                icon: item.icon,
+                isMoney: item.isMoney,
+                value: item.value || 0,
+                missText: item.missText || "",
+                collected: false,
+              };
+            });
+            coinsEl.textContent = "0";
+            progressEl.textContent = "0%";
+            resultPanel.hidden = true;
+            shopPanel.hidden = true;
+            stageWrapEl.hidden = false;
+            hudEl.hidden = false;
+            controlsEl.hidden = false;
+            hintEl.hidden = false;
+            running = true;
+            if (rafId) window.cancelAnimationFrame(rafId);
+            rafId = window.requestAnimationFrame(loop);
+          }
+
+          finishBtn.addEventListener("click", finishShopping);
+          retryBtn.addEventListener("click", resetGame);
+
+          window.addEventListener("keydown", function (event) {
+            if (event.key === "ArrowLeft") {
+              keys.left = true;
+              event.preventDefault();
+            }
+            if (event.key === "ArrowRight") {
+              keys.right = true;
+              event.preventDefault();
+            }
+          });
+          window.addEventListener("keyup", function (event) {
+            if (event.key === "ArrowLeft") keys.left = false;
+            if (event.key === "ArrowRight") keys.right = false;
+          });
+
+          function bindHold(el, onFlag) {
+            var setTrue = function (event) {
+              event.preventDefault();
+              onFlag(true);
+            };
+            var setFalse = function () {
+              onFlag(false);
+            };
+            el.addEventListener("mousedown", setTrue);
+            el.addEventListener("touchstart", setTrue, { passive: false });
+            el.addEventListener("mouseup", setFalse);
+            el.addEventListener("mouseleave", setFalse);
+            el.addEventListener("touchend", setFalse);
+            el.addEventListener("touchcancel", setFalse);
+          }
+          bindHold(leftBtn, function (value) {
+            keys.left = value;
+          });
+          bindHold(rightBtn, function (value) {
+            keys.right = value;
+          });
+
+          resetGame();
+        })();
+      </script>
+    `,
+  });
+}
+
+function renderGamesPage() {
+  return pageShell({
+    title: "边玩边学财商",
+    active: "games",
+    body: `
+      <section class="page-section compact-page">
+        <div class="section-header">
+          <p>Games 游戏中心</p>
+          <h1>边玩边学财商</h1>
+          <p class="english-note">Play Games, Learn Money</p>
+          <span>每个星球都有自己的玩法。第一个可以玩的游戏已经上线，其余正在制作中。</span>
+        </div>
+        <div class="feature-list">
+          ${playableGames
+            .map((game) => {
+              const planet = planets.find((item) => item.id === game.planetId);
+              return `
+                <article class="feature-card playable ${planet.color}">
+                  <span class="mini-icon">${planetIconSvg(planet.icon)}</span>
+                  <h3>${game.titleZh}</h3>
+                  <p class="english-note">${game.titleEn}</p>
+                  <p>${game.instructions}</p>
+                  <a class="button primary" href="/play/${game.id}">开始游戏 Play Now</a>
+                </article>
+              `;
+            })
+            .join("")}
+          ${games
+            .map(
+              (item) => `
+                <article class="feature-card">
+                  <span class="mini-icon">★</span>
+                  <h3>${item.title}</h3>
+                  <p class="english-note">${item.en}</p>
+                  <p>${item.text}</p>
+                  <span class="coming-soon">制作中 Coming Soon</span>
+                </article>
+              `,
+            )
+            .join("")}
+        </div>
       </section>
     `,
   });
@@ -927,14 +1624,11 @@ function renderPage(request = new Request("https://money-planet.local/")) {
   if (url.pathname.startsWith("/lesson/")) {
     return renderLessonPage(url, url.pathname.split("/").filter(Boolean)[1]);
   }
+  if (url.pathname.startsWith("/play/")) {
+    return renderGamePage(url.pathname.split("/").filter(Boolean)[1]);
+  }
   if (url.pathname === "/games") {
-    return renderListPage({
-      title: "边玩边学财商",
-      en: "Play Games, Learn Money",
-      eyebrow: "Games 游戏中心",
-      active: "games",
-      items: games,
-    });
+    return renderGamesPage();
   }
   if (url.pathname === "/library") {
     return renderListPage({
@@ -1349,9 +2043,10 @@ function siteStyles() {
       }
       .tag-row.compact { margin-top: 0; }
       .tag-row.compact span { padding: 6px 9px; font-size: 0.78rem; }
-      .planet-lessons { margin-top: 22px; padding-top: 18px; border-top: 1px dashed rgba(36, 49, 59, 0.18); }
-      .planet-lessons h3 { font-size: 1.05rem; }
-      .planet-lessons h3 small, .mission-block h4 small { color: #547386; font-weight: 800; }
+      .planet-lessons, .planet-games { margin-top: 22px; padding-top: 18px; border-top: 1px dashed rgba(36, 49, 59, 0.18); }
+      .planet-lessons h3, .planet-games h3 { font-size: 1.05rem; }
+      .planet-lessons h3 small, .planet-games h3 small, .mission-block h4 small { color: #547386; font-weight: 800; }
+      .planet-games .lesson-button { display: inline-flex; }
       .lesson-card {
         display: grid;
         gap: 12px;
@@ -1366,13 +2061,194 @@ function siteStyles() {
       .lesson-button { min-height: 40px; border: 2px solid rgba(35, 122, 163, 0.18); background: rgba(255, 255, 255, 0.86); color: #155f83; font-size: 0.9rem; }
 
       .back-link { display: inline-flex; margin-bottom: 18px; color: #237aa3; font-weight: 1000; }
-      .lesson-hero {
+      .lesson-hero, .game-hero {
         margin-bottom: 20px;
         padding: 34px;
         border: 5px solid rgba(255, 255, 255, 0.76);
         border-radius: 32px;
         box-shadow: var(--shadow);
       }
+      .game-instructions { max-width: 640px; font-weight: 800; color: #31434f; }
+      .money-match {
+        max-width: 640px;
+        margin: 0 auto;
+        padding: 28px;
+        border: 1px solid rgba(255, 255, 255, 0.72);
+        border-radius: 28px;
+        background: rgba(255, 253, 245, 0.86);
+        box-shadow: 0 14px 36px rgba(74, 111, 131, 0.1);
+        text-align: center;
+      }
+      .mm-scoreboard {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 14px;
+        margin-bottom: 24px;
+        font-weight: 800;
+        color: #41515e;
+      }
+      .mm-scoreboard strong { color: #237aa3; }
+      .mm-badge-pill {
+        padding: 6px 12px;
+        border-radius: 999px;
+        background: rgba(255, 216, 104, 0.4);
+        font-weight: 900;
+        color: #7d4d0e;
+      }
+      .mm-stage { display: grid; justify-items: center; gap: 10px; margin-bottom: 26px; }
+      .mm-stage[hidden], .mm-bins[hidden], .mm-result[hidden] { display: none; }
+      .mm-mascot { width: 56px; height: 56px; animation: mascot-float 3.6s ease-in-out infinite; }
+      .mm-item-card {
+        display: grid;
+        gap: 10px;
+        width: min(100%, 320px);
+        padding: 28px 20px;
+        border: 4px solid rgba(255, 255, 255, 0.85);
+        border-radius: 26px;
+        background: linear-gradient(145deg, rgba(114, 200, 244, 0.16), rgba(255, 255, 255, 0.9));
+        box-shadow: 0 14px 30px rgba(65, 91, 113, 0.16);
+        transition: box-shadow 200ms ease;
+      }
+      .mm-item-icon { font-size: 2.6rem; line-height: 1; }
+      .mm-item-label { font-size: 1.08rem; font-weight: 900; color: #263743; }
+      .mm-item-card.mm-correct { animation: mm-pop 400ms ease; box-shadow: 0 0 0 5px rgba(117, 223, 189, 0.6); }
+      .mm-item-card.mm-wrong { animation: mm-shake 400ms ease; box-shadow: 0 0 0 5px rgba(255, 138, 112, 0.6); }
+      @keyframes mm-pop {
+        0% { transform: scale(1); }
+        45% { transform: scale(1.08); }
+        100% { transform: scale(1); }
+      }
+      @keyframes mm-shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-7px); }
+        75% { transform: translateX(7px); }
+      }
+      .mm-bins { display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; }
+      .mm-bin {
+        display: grid;
+        gap: 4px;
+        width: 118px;
+        padding: 16px 10px;
+        border: none;
+        border-radius: 22px;
+        color: #20323d;
+        font-family: inherit;
+        cursor: pointer;
+        transition: transform 160ms ease, box-shadow 160ms ease;
+        box-shadow: 0 10px 22px rgba(65, 91, 113, 0.16);
+      }
+      .mm-bin:hover, .mm-bin:focus-visible { transform: translateY(-4px); outline: none; }
+      .mm-bin-icon { font-size: 1.6rem; }
+      .mm-bin strong { font-size: 0.98rem; }
+      .mm-bin small { font-weight: 800; opacity: 0.75; }
+      .mm-result h2 { font-size: 1.6rem; }
+      .mm-badge-earned { margin-top: 6px; color: #be5a40; font-weight: 900; }
+      .tch-root {
+        max-width: 680px;
+        margin: 0 auto;
+        padding: 28px;
+        border: 1px solid rgba(255, 255, 255, 0.72);
+        border-radius: 28px;
+        background: rgba(255, 253, 245, 0.86);
+        box-shadow: 0 14px 36px rgba(74, 111, 131, 0.1);
+        text-align: center;
+      }
+      .tch-hud {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 18px;
+        margin-bottom: 16px;
+        font-weight: 800;
+        color: #41515e;
+      }
+      .tch-hud strong { color: #237aa3; }
+      .tch-hud strong.tch-bump { animation: mm-pop 350ms ease; }
+      .tch-hud[hidden] { display: none; }
+      .tch-stage-wrap {
+        position: relative;
+        max-width: 640px;
+        margin: 0 auto;
+        border-radius: 24px;
+        overflow: hidden;
+        border: 4px solid rgba(255, 255, 255, 0.85);
+        box-shadow: 0 14px 30px rgba(65, 91, 113, 0.16);
+      }
+      .tch-stage-wrap[hidden] { display: none; }
+      #tch-canvas { display: block; width: 100%; height: auto; background: #eaf8ff; touch-action: none; }
+      .tch-toast {
+        position: absolute;
+        top: 12px;
+        left: 50%;
+        transform: translateX(-50%) translateY(-6px);
+        opacity: 0;
+        padding: 8px 16px;
+        border-radius: 999px;
+        background: var(--coral);
+        color: #fff6f0;
+        font-weight: 900;
+        font-size: 0.92rem;
+        box-shadow: 0 10px 22px rgba(255, 138, 112, 0.4);
+        pointer-events: none;
+        transition: opacity 200ms ease, transform 200ms ease;
+      }
+      .tch-toast-show { opacity: 1; transform: translateX(-50%) translateY(0); }
+      .tch-controls {
+        display: flex;
+        justify-content: center;
+        gap: 16px;
+        margin-top: 16px;
+      }
+      .tch-controls[hidden] { display: none; }
+      .tch-btn {
+        width: 56px;
+        height: 56px;
+        border: none;
+        border-radius: 50%;
+        background: linear-gradient(145deg, var(--mint), var(--sky));
+        color: white;
+        font-size: 1.4rem;
+        cursor: pointer;
+        box-shadow: 0 10px 22px rgba(65, 91, 113, 0.2);
+        transition: transform 160ms ease;
+      }
+      .tch-btn:hover, .tch-btn:focus-visible { transform: translateY(-3px); outline: none; }
+      .tch-btn:active { transform: translateY(1px); }
+      .tch-hint { margin-top: 14px; font-weight: 700; color: #41515e; }
+      .tch-hint[hidden] { display: none; }
+      .tch-panel { max-width: 560px; margin: 0 auto; }
+      .tch-panel h2 { font-size: 1.5rem; }
+      .tch-shop-items {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 12px;
+        margin: 18px 0;
+      }
+      .tch-shop-item {
+        display: grid;
+        gap: 4px;
+        justify-items: center;
+        width: 108px;
+        padding: 14px 8px;
+        border: none;
+        border-radius: 20px;
+        background: white;
+        color: #20323d;
+        font-family: inherit;
+        cursor: pointer;
+        box-shadow: 0 10px 22px rgba(65, 91, 113, 0.14);
+        transition: transform 160ms ease, opacity 160ms ease;
+      }
+      .tch-shop-item:hover:not(:disabled) { transform: translateY(-4px); }
+      .tch-shop-item:disabled { opacity: 0.45; cursor: not-allowed; }
+      .tch-shop-icon { font-size: 1.6rem; }
+      .tch-shop-price { font-size: 0.82rem; font-weight: 800; color: #237aa3; }
+      .tch-shop-count { font-size: 0.78rem; font-weight: 800; color: #be5a40; min-height: 1em; }
+      .tch-wallet { font-weight: 800; color: #41515e; }
+      .tch-wallet strong { color: #237aa3; }
       .lesson-detail {
         display: grid;
         gap: 14px;
@@ -1413,6 +2289,20 @@ function siteStyles() {
         border-radius: 16px;
         background: var(--yellow);
         color: #7d4d0e;
+      }
+      .mini-icon svg { width: 26px; height: 26px; }
+      .feature-card.playable .mini-icon { background: rgba(255, 255, 255, 0.72); }
+      .feature-card .button { margin-top: 16px; }
+      .coming-soon {
+        display: inline-flex;
+        width: fit-content;
+        margin-top: 16px;
+        padding: 6px 12px;
+        border-radius: 999px;
+        background: rgba(36, 49, 59, 0.08);
+        color: #61707e;
+        font-size: 0.82rem;
+        font-weight: 900;
       }
       .mission-card { min-height: 150px; background: linear-gradient(145deg, rgba(114, 200, 244, 0.18), rgba(255, 255, 255, 0.82)); }
       .mission-card span, .roadmap span { display: inline-flex; margin-bottom: 14px; color: #be5a40; font-weight: 1000; }
