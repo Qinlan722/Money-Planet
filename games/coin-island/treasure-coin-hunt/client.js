@@ -251,10 +251,10 @@ export const clientScript = `
     segments.forEach(function (seg) {
       var width = seg[1] - seg[0];
       if (width <= 0) return;
-      graphics.fillStyle(0x75dfbd, 1);
-      graphics.fillRect(seg[0], GROUND_Y, width, 10);
-      graphics.fillStyle(0xe8caa0, 1);
-      graphics.fillRect(seg[0], GROUND_Y + 10, width, VIEW_H - GROUND_Y - 10);
+      graphics.fillStyle(0xffd873, 1);
+      graphics.fillRect(seg[0], GROUND_Y, width, 6);
+      graphics.fillStyle(0x241a4e, 1);
+      graphics.fillRect(seg[0], GROUND_Y + 6, width, VIEW_H - GROUND_Y - 6);
 
       var rect = scene.add.rectangle(seg[0] + width / 2, GROUND_Y + 35, width, 70, 0x000000, 0);
       scene.physics.add.existing(rect, true);
@@ -264,12 +264,14 @@ export const clientScript = `
   }
 
   function buildBackground(scene) {
-    scene.add.rectangle(WORLD_WIDTH / 2, VIEW_H / 2, WORLD_WIDTH + 400, VIEW_H, 0xeaf8ff).setScrollFactor(0.02);
+    var sky = scene.add.graphics().setScrollFactor(0.02);
+    sky.fillGradientStyle(0x12143a, 0x12143a, 0x2a2f6e, 0x2a2f6e, 1);
+    sky.fillRect(-200, 0, WORLD_WIDTH + 400, VIEW_H);
     for (var h = 0; h < WORLD_WIDTH; h += 380) {
-      scene.add.image(h + 190, GROUND_Y + 40, "hill").setScrollFactor(0.35).setDepth(-2);
+      scene.add.image(h + 190, GROUND_Y + 40, "hill").setScrollFactor(0.35).setDepth(-2).setTint(0x4a4a8a).setAlpha(0.6);
     }
     for (var c = 0; c < WORLD_WIDTH; c += 260) {
-      scene.add.image(c + 100, 60 + ((c / 260) % 3) * 30, "cloud").setScrollFactor(0.15).setDepth(-3);
+      scene.add.image(c + 100, 60 + ((c / 260) % 3) * 30, "cloud").setScrollFactor(0.15).setDepth(-3).setTint(0xd9d6f0).setAlpha(0.45);
     }
   }
 

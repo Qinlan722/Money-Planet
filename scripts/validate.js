@@ -17,6 +17,9 @@ async function fetchHtml(pathname) {
 const home = await fetchHtml("/");
 const age = await fetchHtml("/age");
 const explore = await fetchHtml("/explore?level=explorer");
+const exploreBeginner = await fetchHtml("/explore?level=beginner");
+const exploreBuilder = await fetchHtml("/explore?level=builder");
+const planetMap = await fetchHtml("/explore/coin-island?level=beginner");
 const lesson = await fetchHtml("/lesson/lesson-wants-needs?level=explorer");
 const games = await fetchHtml("/games");
 const library = await fetchHtml("/library");
@@ -94,6 +97,9 @@ for (const [scope, page] of Object.entries({
   home,
   age,
   explore,
+  exploreBeginner,
+  exploreBuilder,
+  planetMap,
   lesson,
   games,
   library,
@@ -122,23 +128,34 @@ requireSnippet(age.html, "/explore?level=beginner", "age");
 requireSnippet(age.html, "/explore?level=explorer", "age");
 requireSnippet(age.html, "/explore?level=builder", "age");
 
-requireSnippet(explore.html, "探索六个财商星球", "explore");
-requireSnippet(explore.html, "Explore Six Money Planets", "explore");
+requireSnippet(explore.html, "探索财商星球", "explore");
+requireSnippet(explore.html, "Explore Money Planets", "explore");
+// Explorer level has lessons on every planet, so all 6 should appear as entry links.
 for (const id of planetIds) {
-  requireSnippet(explore.html, `id="${id}"`, "explore");
-}
-for (const id of lessonIds) {
-  requireSnippet(explore.html, `/lesson/${id}`, "explore");
+  requireSnippet(explore.html, `href="/explore/${id}?level=explorer"`, "explore");
 }
 
-const startLessonCount = (explore.html.match(/开始学习 \/ Start Lesson/g) || []).length;
-if (startLessonCount !== 18) {
-  missing.push(`explore: expected 18 Start Lesson buttons, found ${startLessonCount}`);
+// Age-based filtering: only planets with matching-level lessons should be offered.
+requireSnippet(exploreBeginner.html, `href="/explore/coin-island?level=beginner"`, "exploreBeginner");
+forbidSnippet(exploreBeginner.html, `href="/explore/market-town?level=beginner"`, "exploreBeginner");
+requireSnippet(exploreBuilder.html, `href="/explore/business-bay?level=builder"`, "exploreBuilder");
+forbidSnippet(exploreBuilder.html, `href="/explore/coin-island?level=builder"`, "exploreBuilder");
+
+requireSnippet(planetMap.html, "硬币岛", "planetMap");
+requireSnippet(planetMap.html, "level-node", "planetMap");
+requireSnippet(planetMap.html, "planet-progress-fill", "planetMap");
+requireSnippet(planetMap.html, "米米说", "planetMap");
+requireSnippet(planetMap.html, "已获星星", "planetMap");
+requireSnippet(planetMap.html, "连续学习", "planetMap");
+requireSnippet(planetMap.html, "获得徽章", "planetMap");
+for (const id of lessonIds.filter((lessonId) => lessonId.startsWith("lesson-money-is") || lessonId.startsWith("lesson-coin-count"))) {
+  requireSnippet(planetMap.html, `/lesson/${id}`, "planetMap");
 }
 
 requireSnippet(lesson.html, "想要还是需要？", "lesson");
 requireSnippet(lesson.html, "Want or Need?", "lesson");
-requireSnippet(lesson.html, "返回星球探索", "lesson");
+requireSnippet(lesson.html, "返回闯关地图", "lesson");
+requireSnippet(lesson.html, "lesson-complete-btn", "lesson");
 for (const moduleTitle of lessonModules) {
   requireSnippet(lesson.html, moduleTitle, "lesson");
 }

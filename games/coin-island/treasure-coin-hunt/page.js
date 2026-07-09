@@ -5,7 +5,7 @@ const PHASER_CDN_SRC = "https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.m
 export function renderTreasureHuntBody(game, planet) {
   return `
     <section class="page-section compact-page game-page">
-      <a class="back-link" href="/explore?level=beginner#${planet.id}">← 返回${planet.zh} Back to ${planet.name}</a>
+      <a class="back-link" href="/explore/${planet.id}?level=beginner">← 返回${planet.zh} Back to ${planet.name}</a>
       <div class="game-hero ${planet.color}">
         <p>${planet.zh} · ${planet.name}</p>
         <h1>${game.titleZh}</h1>
@@ -46,7 +46,7 @@ export function renderTreasureHuntBody(game, planet) {
           <p id="tch-result-text"></p>
           <div class="hero-actions center-actions">
             <button type="button" class="button primary" id="tch-retry">再试一次 Try Again</button>
-            <a class="button secondary" href="/explore?level=beginner#${planet.id}">返回${planet.zh} Back to Planet</a>
+            <a class="button secondary" href="/explore/${planet.id}?level=beginner">返回${planet.zh} Back to Planet</a>
           </div>
         </div>
       </div>

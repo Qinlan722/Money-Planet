@@ -101,6 +101,21 @@ Also include these product areas:
 
 ## Visual Style
 
+### Cosmic redesign (2026-07-07) — supersedes the original bright pastel palette below
+
+The site now follows a "night sky space adventure" visual system, designed in a Claude Design
+file and applied site-wide: a dark navy-to-purple gradient background (`#12143A` → `#1A1E4E` →
+`#241A4E`) with a subtle star-dot texture, Fredoka (display/headings) + Nunito (body) fonts,
+glassmorphic cards (translucent white on dark), glowing gradient "planet orb" spheres per planet
+color, and warm gold (`#FFD873` → `#F2971D`) pill buttons/accents. This is a deliberate, confirmed
+pivot — not an oversight — and it intentionally uses dark-navy-and-gold, which the old "Avoid"
+line below used to rule out; that line is retired. The reasoning: this reads as a cosmic
+exploration/space-adventure game (glowing planets, floating orbit rings, a friendly sun mascot),
+not as a bank/brokerage dashboard, so it doesn't violate the actual intent behind the original
+rule (avoid looking like a financial institution) even though it changes the letter of it.
+
+Original bright pastel palette (retired as the dominant style, kept here for history):
+
 - Overall feeling: cute but not childish, bright, clean, exploratory, trustworthy, and optimistic.
 - Use a colorful education palette:
   - Sky blue
@@ -116,7 +131,6 @@ Also include these product areas:
 ## Avoid
 
 - Do not make the site look like a financial institution, bank, brokerage, crypto exchange, wealth manager, or securities platform.
-- Do not use a dark blue and gold finance palette as the dominant style.
 - Do not include investing advice, stock picking, trading language, asset management claims, interest-rate products, loans, credit cards, or financial performance promises.
 - Do not build real payment, checkout, subscription, trading, or portfolio features at any phase — game currency (stars/coins) is play money for progress tracking, never a real financial instrument.
 - Do not build a child-facing login/signup flow — any account model must be parent-managed (e.g. a family code or parent-created profile), given children's-data privacy considerations.
