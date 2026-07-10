@@ -1,8 +1,12 @@
 import { treasureCoinHuntMeta } from "../games/coin-island/treasure-coin-hunt/meta.js";
 import { renderTreasureHuntBody } from "../games/coin-island/treasure-coin-hunt/page.js";
 import { renderInteractiveLessonBody } from "../lessons/coin-island/leo-and-20-yuan/page.js";
+import { renderCoinParadeBody } from "../lessons/coin-island/coin-parade/page.js";
 
-const INTERACTIVE_LESSON_IDS = new Set(["lesson-money-is"]);
+const INTERACTIVE_LESSON_RENDERERS = {
+  "lesson-money-is": renderInteractiveLessonBody,
+  "lesson-coin-count": renderCoinParadeBody,
+};
 
 const planets = [
   {
@@ -1027,11 +1031,12 @@ function renderLessonPage(url, lessonId) {
 
   const planet = planets.find((item) => item.id === lesson.planetId);
 
-  if (INTERACTIVE_LESSON_IDS.has(lesson.id)) {
+  const interactiveRenderer = INTERACTIVE_LESSON_RENDERERS[lesson.id];
+  if (interactiveRenderer) {
     return pageShell({
       title: lesson.titleZh,
       active: "lessons",
-      body: renderInteractiveLessonBody(lesson, planet),
+      body: interactiveRenderer(lesson, planet),
     });
   }
 
@@ -2381,7 +2386,7 @@ function siteStyles() {
         position: relative;
         margin-bottom: 26px;
         padding: 34px 40px 40px;
-        border-radius: 0 0 40px 40px;
+        border-radius: 40px;
         background: linear-gradient(135deg, #ffc14d 0%, #f7a92c 55%, #f39c12 100%);
         box-shadow: 0 14px 44px rgba(245, 166, 35, 0.35);
         color: #3a2404;
@@ -2457,12 +2462,17 @@ function siteStyles() {
       .il-border-pink { border-color: #ffb3d1; box-shadow: 0 6px 0 #ffb3d1; }
       .il-border-teal { border-color: #8fdcc8; box-shadow: 0 5px 0 #8fdcc8; }
       .il-border-blue2 { border-color: #cfc4ff; box-shadow: 0 5px 0 #cfc4ff; }
+      .il-border-yellow { border-color: #ffd766; box-shadow: 0 5px 0 #d9b23e; }
       .il-choice-emoji { font-size: 38px; }
       .il-choice-label { font-size: 15px; font-weight: 700; }
+
+      .il-coin-pile { display: flex; justify-content: center; align-items: flex-end; gap: 12px; margin-bottom: 18px; }
+      .il-pile-coin { display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; border: 2px solid; font-weight: 800; }
 
       .il-outcome { text-align: center; margin: 6px 0 16px; }
       .il-outcome-emoji { font-size: 58px; animation: pop-in-il 0.5s ease; }
       .il-outcome-title { font-family: 'ZCOOL KuaiLe', sans-serif; font-size: 22px; color: #3b2f96; margin-top: 6px; }
+      .il-outcome-coins { font-size: 34px; letter-spacing: 4px; margin-top: 10px; animation: pop-in-il 0.5s ease 0.3s both; }
       .il-outcome-lines { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; }
       .il-outcome-line { border-radius: 14px; padding: 12px 16px; font-size: 15px; font-weight: 600; color: #443d6e; }
       .il-line-good { background: #e8f8ee; }
@@ -2507,6 +2517,8 @@ function siteStyles() {
       .il-explore-emoji { font-size: 36px; }
       .il-explore-en { font-family: 'Baloo 2', sans-serif; font-weight: 700; font-size: 14px; line-height: 1.4; }
       .il-explore-zh { font-size: 12px; opacity: 0.8; }
+      .il-explore-zh-bold { font-size: 17px; font-weight: 900; line-height: 1.4; }
+      .il-explore-en-faded { font-family: 'Baloo 2', sans-serif; font-weight: 700; font-size: 12px; opacity: 0.7; }
       .il-explore-check { font-size: 12px; }
       .il-reveal { text-align: center; animation: pop-in-il 0.4s ease; }
       .il-reveal-row { display: flex; justify-content: center; align-items: center; gap: 16px; font-size: 40px; }
@@ -2518,6 +2530,9 @@ function siteStyles() {
       .il-limited-value { font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: 56px; color: #e8593d; }
       .il-limited-coins { display: flex; justify-content: center; gap: 8px; font-size: 30px; margin: 8px 0; }
       .il-limited-coin { transition: opacity 0.5s, filter 0.5s; }
+      .il-values-row { display: flex; justify-content: center; align-items: flex-end; gap: 26px; }
+      .il-values-label { font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: 20px; }
+      .il-combine-lines { display: flex; flex-direction: column; gap: 6px; font-size: 22px; font-weight: 700; margin-top: 8px; }
 
       .il-game-box {
         position: relative;
@@ -2553,6 +2568,35 @@ function siteStyles() {
       .il-done-title { font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: 26px; color: #ffd766; }
       .il-done-sub { font-family: 'Baloo 2', sans-serif; font-weight: 700; font-size: 17px; color: #fff; }
       .il-done-score { font-size: 15px; color: #cfc8f5; }
+
+      .il-bridge-panel { background: linear-gradient(180deg, #241a6e, #35297f 80%, #443a8f); border: 3px solid #6a5cd6; border-radius: 24px; padding: 26px; box-shadow: 0 8px 0 rgba(0, 0, 0, 0.3); }
+      .il-bridge-scene { position: relative; margin-bottom: 20px; border-radius: 18px; overflow: hidden; background: linear-gradient(180deg, #241a6e, #35297f 80%, #443a8f); border: 3px solid #6a5cd6; }
+      .il-bridge-panel .il-bridge-scene { background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.14)); border: none; margin-bottom: 18px; }
+      .il-bridge-water { position: absolute; left: 0; right: 0; bottom: 0; height: 26px; background: linear-gradient(180deg, #2a3f9f, #1d2c6e); }
+      .il-bridge-bank-near { position: absolute; left: -14px; bottom: 20px; width: 90px; height: 40px; background: #3a2f6f; border-radius: 20px 30px 0 0; }
+      .il-bridge-bank-far { position: absolute; right: -14px; bottom: 20px; width: 150px; height: 60px; background: #3a2f6f; border-radius: 30px 20px 0 0; }
+      .il-mimi { position: absolute; left: 20px; bottom: 22px; width: 58px; height: 92px; animation: bounce-soft-il 3.5s ease-in-out infinite; }
+      @keyframes bounce-soft-il { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+      .il-game-target-text { text-align: center; margin-bottom: 16px; }
+      .il-target-num { font-family: 'Baloo 2', sans-serif; font-size: 28px; color: #ffd766; }
+      .il-total-num { font-family: 'Baloo 2', sans-serif; font-size: 22px; color: #6ee0c8; }
+      .il-game-msg { margin-top: 8px; font-family: 'ZCOOL KuaiLe', sans-serif; font-size: 19px; letter-spacing: 1px; animation: pop-in-il 0.3s ease; }
+      .il-msg-ok { color: #6ee0c8; }
+      .il-msg-over { color: #ff9c8a; animation: shake-il 0.35s ease; }
+      .il-coin-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; max-width: 440px; margin: 0 auto; }
+      .il-coin-btn {
+        min-height: 84px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+        background: #fff; border: 3px solid #ffd766; border-radius: 18px; cursor: pointer;
+        font-family: 'Baloo 2', sans-serif; box-shadow: 0 6px 0 #c9a53e; transition: transform 120ms ease;
+      }
+      .il-coin-btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #c9a53e; }
+      .il-coin-icon { border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; }
+      .il-coin-label { font-weight: 800; font-size: 15px; color: #6b4a00; }
+      .il-clear-btn {
+        font-family: 'Noto Sans SC', sans-serif; font-size: 14px; font-weight: 700; color: #cfc8f5;
+        background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255, 255, 255, 0.25); border-radius: 999px;
+        padding: 9px 20px; cursor: pointer;
+      }
 
       .il-rl-center { text-align: center; }
       .il-rl-emoji { font-size: 44px; margin-bottom: 8px; }
