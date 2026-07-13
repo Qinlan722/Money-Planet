@@ -20,7 +20,7 @@ const explore = await fetchHtml("/explore?level=explorer");
 const exploreBeginner = await fetchHtml("/explore?level=beginner");
 const exploreBuilder = await fetchHtml("/explore?level=builder");
 const planetMap = await fetchHtml("/explore/coin-island?level=beginner");
-const lesson = await fetchHtml("/lesson/lesson-fair-trade?level=explorer");
+const lesson = await fetchHtml("/lesson/lesson-choice-cost?level=explorer");
 const games = await fetchHtml("/games");
 const library = await fetchHtml("/library");
 const missions = await fetchHtml("/missions");
@@ -152,8 +152,8 @@ for (const id of lessonIds.filter((lessonId) => lessonId.startsWith("lesson-mone
   requireSnippet(planetMap.html, `/lesson/${id}`, "planetMap");
 }
 
-requireSnippet(lesson.html, "公平交换小站", "lesson");
-requireSnippet(lesson.html, "Fair Trade Stop", "lesson");
+requireSnippet(lesson.html, "选了 A，就暂时放下 B", "lesson");
+requireSnippet(lesson.html, "Choosing Means Letting Go", "lesson");
 requireSnippet(lesson.html, "返回闯关地图", "lesson");
 requireSnippet(lesson.html, "lesson-complete-btn", "lesson");
 for (const moduleTitle of lessonModules) {

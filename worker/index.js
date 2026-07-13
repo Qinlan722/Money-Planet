@@ -6,12 +6,14 @@ import { tinyShopkeeperMeta } from "../games/market-town/tiny-shopkeeper/meta.js
 import { renderTinyShopkeeperBody } from "../games/market-town/tiny-shopkeeper/page.js";
 import { renderInteractiveLessonBody } from "../lessons/coin-island/leo-and-20-yuan/page.js";
 import { renderCoinParadeBody } from "../lessons/coin-island/coin-parade/page.js";
+import { renderFairTradeStopBody } from "../lessons/coin-island/fair-trade-stop/page.js";
 import { renderWantOrNeedBody } from "../lessons/choice-forest/want-or-need/page.js";
 import { renderThreeBudgetJarsBody } from "../lessons/budget-city/three-budget-jars/page.js";
 
 const INTERACTIVE_LESSON_RENDERERS = {
   "lesson-money-is": renderInteractiveLessonBody,
   "lesson-coin-count": renderCoinParadeBody,
+  "lesson-fair-trade": renderFairTradeStopBody,
   "lesson-wants-needs": renderWantOrNeedBody,
   "lesson-budget-jars": renderThreeBudgetJarsBody,
 };
@@ -119,16 +121,6 @@ function mascotSvg() {
 }
 
 const games = [
-  {
-    title: "想要还是需要？",
-    en: "Want or Need?",
-    text: "把早餐、玩具、校车、贴纸等卡片放进不同篮子，说出你的理由。",
-  },
-  {
-    title: "小小店长",
-    en: "Tiny Shopkeeper",
-    text: "给文具和点心贴上价格，练习找零和公平交易。",
-  },
   {
     title: "预算拼图",
     en: "Budget Builder",
@@ -3119,8 +3111,63 @@ function siteStyles() {
         background: radial-gradient(circle at 35% 30%, #cfe1ff, #5f9dff 75%); border-color: #eaf2ff;
       }
 
+      /* Fair Trade Stop (lesson 5) trade-stall visuals */
+      .il-border-red { border-color: #f0a0a0; box-shadow: 0 6px 0 #f0a0a0; }
+
+      @keyframes swap-arrow-il { 0%, 100% { transform: translateX(-3px); } 50% { transform: translateX(3px); } }
+
+      .il-stall-scene {
+        position: relative; height: 210px; margin-bottom: 20px; border-radius: 18px; overflow: hidden;
+        background: linear-gradient(180deg, #8a5a24 0%, #a5692c 60%, #c08438 100%); border: 3px solid #d99a4a;
+      }
+      .il-stall-awning { position: absolute; top: 0; left: 0; right: 0; height: 34px; background: repeating-linear-gradient(90deg, #e8593d 0 26px, #fff3e0 26px 52px); }
+      .il-stall-pennant {
+        position: absolute; top: 30px; left: 0; right: 0; height: 12px;
+        background: repeating-linear-gradient(90deg, #e8593d 0 26px, #fff3e0 26px 52px);
+        clip-path: polygon(0 0, 100% 0, 100% 40%, 92% 100%, 84% 40%, 76% 100%, 68% 40%, 60% 100%, 52% 40%, 44% 100%, 36% 40%, 28% 100%, 20% 40%, 12% 100%, 8% 40%, 0 100%);
+      }
+      .il-stall-sign {
+        position: absolute; top: 46px; left: 50%; transform: translateX(-50%); background: #6b4200; color: #ffe9a8;
+        font-family: 'ZCOOL KuaiLe', sans-serif; font-size: 15px; padding: 4px 14px; border-radius: 8px; border: 2px solid #ffd766;
+      }
+      .il-stall-counter { position: absolute; left: 0; right: 0; bottom: 0; height: 58px; background: linear-gradient(180deg, #7a4a1e, #5c3612); }
+      .il-stall-counter-top { position: absolute; left: 0; right: 0; bottom: 54px; height: 10px; background: #caa25e; }
+
+      .il-trade-panel { background: linear-gradient(180deg, #8a5a24, #a5692c 70%, #b8792f); border: 3px solid #d99a4a; border-radius: 24px; padding: 24px; box-shadow: 0 8px 0 rgba(0, 0, 0, 0.3); }
+      .il-stamp-row { display: flex; justify-content: center; gap: 8px; margin-bottom: 16px; }
+      .il-stamp-cell {
+        width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+        font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: 16px;
+        background: rgba(255, 255, 255, 0.12); color: #ffe9c4; border: 2px solid rgba(255, 255, 255, 0.25);
+      }
+      .il-stamp-cell.is-done { background: radial-gradient(circle at 35% 30%, #bff3d0, #2fa864 80%); color: #073d1f; border-color: #eafff0; }
+
+      .il-trade-card { background: #fff7ea; border-radius: 20px; padding: 20px 16px; display: flex; align-items: stretch; gap: 10px; color: #5a4326; }
+      .il-trade-side { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; border-radius: 14px; padding: 14px 8px; }
+      .il-trade-give { background: #ffe9cf; }
+      .il-trade-get { background: #e9e0ff; }
+      .il-trade-give .il-trade-label { color: #b26a12; }
+      .il-trade-get .il-trade-label { color: #6a44c9; }
+      .il-trade-label { font-size: 12px; font-weight: 700; }
+      .il-trade-emoji { font-size: 48px; }
+      .il-trade-item-label { font-size: 15px; font-weight: 700; text-align: center; line-height: 1.4; }
+      .il-trade-arrow { display: flex; align-items: center; font-size: 30px; color: #e08a1e; }
+
+      .il-judge-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 16px; }
+      .il-judge-btn {
+        min-height: 64px; display: flex; align-items: center; justify-content: center; gap: 8px; cursor: pointer;
+        border-radius: 18px; font-family: 'ZCOOL KuaiLe', sans-serif; font-size: 20px; transition: transform 120ms ease;
+      }
+      .il-judge-btn:active { transform: translateY(4px); }
+      .il-judge-fair { background: linear-gradient(180deg, #58c98a, #2fa864); border: 3px solid #bff3d0; box-shadow: 0 6px 0 #1c7a3e; color: #073d1f; }
+      .il-judge-unfair { background: linear-gradient(180deg, #ff8a6e, #e8593d); border: 3px solid #ffcbb8; box-shadow: 0 6px 0 #b23a20; color: #5c1a0c; }
+
+      .il-quiz-complete-trade {
+        background: linear-gradient(160deg, #d9860e 0%, #b26a12 100%); border-color: #f0b64a;
+      }
+
       @media (max-width: 640px) {
-        .il-choice-grid, .il-explore-grid, .il-quiz-grid, .il-shelf-grid, .il-jar-grid { grid-template-columns: 1fr; }
+        .il-choice-grid, .il-explore-grid, .il-quiz-grid, .il-shelf-grid, .il-jar-grid, .il-judge-grid { grid-template-columns: 1fr; }
         .il-step-label { display: none; }
       }
 
