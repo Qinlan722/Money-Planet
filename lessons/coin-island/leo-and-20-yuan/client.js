@@ -70,7 +70,6 @@ export const clientScript = `
     rlStep: 0, rlAnswer: null,
     missionText: "", missionSubmitted: false,
     quizIndex: 0, quizScore: 0, quizFeedback: null, quizFinished: false,
-    nextTeaser: false,
   };
 
   try {
@@ -567,12 +566,8 @@ export const clientScript = `
         '<div class="il-badge-note">今天你学会了：钱能交换、钱是有限的、每个选择都有结果。</div>' +
         '<div class="il-actions">' +
         '<button type="button" class="il-btn-ghost" id="il-restart-all">🔁 从头再玩一次</button>' +
-        '<button type="button" class="il-btn-gold" id="il-next-level">下一关 →</button>' +
-        "</div>";
-      if (state.nextTeaser) {
-        html += '<div class="il-next-teaser">🏙️ 下一关：预算城 Budget City · 即将开放，敬请期待！</div>';
-      }
-      html += "</div>";
+        '<a class="il-btn-gold" href="/lesson/lesson-coin-count?level=beginner">下一关：硬币会排队 →</a>' +
+        "</div></div>";
     }
     stageEl.innerHTML = html;
 
@@ -585,13 +580,6 @@ export const clientScript = `
       }
     } else {
       document.getElementById("il-restart-all").addEventListener("click", restartAll);
-      var nextBtn = document.getElementById("il-next-level");
-      if (nextBtn) {
-        nextBtn.addEventListener("click", function () {
-          state.nextTeaser = true;
-          renderQuiz();
-        });
-      }
     }
   }
 
@@ -601,7 +589,7 @@ export const clientScript = `
       stage: 0, maxStage: 5, choice: null, exploreOpen: null, exploreSeen: {},
       gamePhase: "ready", gameScore: 0, gameTime: 30, rlStep: 0, rlAnswer: null,
       missionText: "", missionSubmitted: false, quizIndex: 0, quizScore: 0,
-      quizFeedback: null, quizFinished: false, nextTeaser: false,
+      quizFeedback: null, quizFinished: false,
     };
     saveProgress();
     render();
