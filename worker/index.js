@@ -2,6 +2,8 @@ import { treasureCoinHuntMeta } from "../games/coin-island/treasure-coin-hunt/me
 import { renderTreasureHuntBody } from "../games/coin-island/treasure-coin-hunt/page.js";
 import { wantOrNeedSortMeta } from "../games/choice-forest/want-or-need-sort/meta.js";
 import { renderWantOrNeedSortBody } from "../games/choice-forest/want-or-need-sort/page.js";
+import { tinyShopkeeperMeta } from "../games/market-town/tiny-shopkeeper/meta.js";
+import { renderTinyShopkeeperBody } from "../games/market-town/tiny-shopkeeper/page.js";
 import { renderInteractiveLessonBody } from "../lessons/coin-island/leo-and-20-yuan/page.js";
 import { renderCoinParadeBody } from "../lessons/coin-island/coin-parade/page.js";
 import { renderWantOrNeedBody } from "../lessons/choice-forest/want-or-need/page.js";
@@ -216,6 +218,7 @@ const playableGames = [
   },
   treasureCoinHuntMeta,
   wantOrNeedSortMeta,
+  tinyShopkeeperMeta,
 ];
 
 const lessons = [
@@ -1019,7 +1022,8 @@ function renderPlanetMapPage(url, planetId) {
             totalDone +
             (window.localStorage.getItem("mp_badge_money_match") === "1" ? 1 : 0) +
             (window.localStorage.getItem("mp_badge_treasure_hunt") === "1" ? 1 : 0) +
-            (window.localStorage.getItem("mp_badge_want_need_sort") === "1" ? 1 : 0);
+            (window.localStorage.getItem("mp_badge_want_need_sort") === "1" ? 1 : 0) +
+            (window.localStorage.getItem("mp_badge_tiny_shopkeeper") === "1" ? 1 : 0);
           if (starsEl) starsEl.textContent = String(totalDone * 5) + " ★";
           if (streakEl) streakEl.textContent = String(Number(window.localStorage.getItem("mp_streak_count") || "0")) + " 天";
           if (badgesEl) badgesEl.textContent = String(badgeCount) + " 枚";
@@ -1131,6 +1135,10 @@ function renderGamePage(gameId) {
 
   if (game.kind === "sort") {
     return pageShell({ title: game.titleZh, active: "games", body: renderWantOrNeedSortBody(game, planet) });
+  }
+
+  if (game.kind === "shop") {
+    return pageShell({ title: game.titleZh, active: "games", body: renderTinyShopkeeperBody(game, planet) });
   }
 
   return renderMoneyMatchGame(game, planet);
@@ -2483,6 +2491,140 @@ function siteStyles() {
       @media (max-width: 640px) {
         .wn-baskets { grid-template-columns: 1fr; }
       }
+
+      /* Tiny Shopkeeper game (ts-*) */
+      @keyframes ts-pop-in { 0% { opacity: 0; transform: translateY(14px) scale(0.94); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+      @keyframes ts-drop-in { 0% { opacity: 0; transform: scale(0.3) translateY(-10px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
+      @keyframes ts-badge-glow { 0%, 100% { box-shadow: 0 0 0 0 rgba(255, 148, 102, 0.5); } 50% { box-shadow: 0 0 0 12px rgba(255, 148, 102, 0); } }
+      .ts-root { max-width: 640px; margin: 0 auto; font-family: 'Nunito', sans-serif; }
+      .ts-hl-price { color: #ffb18f; }
+      .ts-hl-change { color: #ffd873; }
+
+      .ts-intro-card { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 22px; padding: 30px 28px; animation: ts-pop-in 0.32s ease; }
+      .ts-intro-text { font-size: 15px; line-height: 1.9; color: #d9d6f0; margin: 0 0 22px; }
+      .ts-info-row { display: flex; gap: 14px; margin-bottom: 24px; flex-wrap: wrap; }
+      .ts-info-chip { flex: 1; min-width: 180px; border-radius: 16px; padding: 16px 18px; }
+      .ts-info-chip.ts-info-price { background: rgba(255, 148, 102, 0.12); border: 1px solid rgba(255, 177, 143, 0.35); }
+      .ts-info-chip.ts-info-change { background: rgba(255, 216, 115, 0.1); border: 1px solid rgba(255, 216, 115, 0.35); }
+      .ts-info-icon { font-size: 24px; margin-bottom: 6px; }
+      .ts-info-chip.ts-info-price .ts-info-title { font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 16px; color: #ffb18f; }
+      .ts-info-chip.ts-info-change .ts-info-title { font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 16px; color: #ffd873; }
+      .ts-info-chip.ts-info-price .ts-info-sub { font-size: 13px; color: #e6c3b4; margin-top: 4px; }
+      .ts-info-chip.ts-info-change .ts-info-sub { font-size: 13px; color: #e6d9ae; margin-top: 4px; }
+      .ts-start-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+      .ts-start-btn {
+        cursor: pointer; border: none; padding: 14px 34px; border-radius: 999px; font-family: 'Nunito', sans-serif;
+        font-weight: 800; font-size: 16px; background: linear-gradient(135deg, #ff9466, #e8623a); color: #5a1e0a;
+      }
+      .ts-start-btn:hover { filter: brightness(1.06); }
+      .ts-total-note { font-size: 13px; color: #8f8cc0; }
+
+      .ts-progress-row { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+      .ts-progress-track { flex: 1; height: 10px; border-radius: 999px; background: rgba(255, 255, 255, 0.1); overflow: hidden; }
+      .ts-progress-fill { height: 100%; background: linear-gradient(90deg, #ff9466, #e8623a); border-radius: 999px; transition: width 0.4s ease; }
+      .ts-progress-label { font-size: 13px; font-weight: 800; color: #c6c3ec; flex-shrink: 0; }
+      .ts-score-chip { display: inline-flex; align-items: center; gap: 5px; background: rgba(255, 255, 255, 0.08); padding: 5px 12px; border-radius: 999px; flex-shrink: 0; font-weight: 800; font-size: 13px; color: #ffefc9; }
+
+      .ts-counter {
+        background: linear-gradient(180deg, rgba(255, 148, 102, 0.14), rgba(255, 148, 102, 0.05));
+        border: 1px solid rgba(255, 177, 143, 0.28); border-radius: 22px 22px 0 0; padding: 20px 22px;
+        display: flex; align-items: center; gap: 16px;
+      }
+      .ts-cust-emoji { font-size: 46px; line-height: 1; flex-shrink: 0; }
+      .ts-cust-bubble { background: rgba(255, 255, 255, 0.96); color: #5a1e0a; font-size: 14px; font-weight: 700; padding: 11px 16px; border-radius: 14px 14px 14px 3px; box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2); line-height: 1.5; }
+      .ts-counter-body { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-top: none; border-radius: 0 0 22px 22px; padding: 24px 22px; }
+      .ts-item-row { display: flex; align-items: center; gap: 14px; justify-content: center; margin-bottom: 20px; }
+      .ts-item-icon { width: 76px; height: 76px; border-radius: 18px; background: linear-gradient(160deg, #ffffff, #fdebe2); box-shadow: 0 8px 18px rgba(0, 0, 0, 0.28); display: flex; align-items: center; justify-content: center; font-size: 40px; }
+      .ts-item-name { font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 20px; color: #fff9ec; }
+      .ts-item-en { font-size: 13px; color: #9b98cc; font-weight: 700; }
+
+      .ts-step-label { text-align: center; font-size: 14px; font-weight: 800; margin-bottom: 14px; }
+      .ts-price-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+      .ts-price-btn {
+        min-width: 76px; cursor: pointer; border: 1.5px solid rgba(255, 255, 255, 0.14); padding: 14px 20px;
+        border-radius: 16px; font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 19px;
+        background: rgba(255, 255, 255, 0.08); color: #f1eefb; transition: all 0.18s ease;
+      }
+      .ts-price-btn:hover:not(:disabled) { filter: brightness(1.07); transform: translateY(-2px); }
+      .ts-price-btn:disabled { cursor: default; }
+      .ts-price-btn.is-fair { background: rgba(111, 208, 140, 0.24); color: #bff0ce; border-color: rgba(143, 224, 168, 0.55); }
+      .ts-price-btn.is-wrong { background: rgba(224, 90, 90, 0.24); color: #ffd3d3; border-color: rgba(224, 120, 120, 0.5); }
+      .ts-price-btn.is-dim { background: rgba(255, 255, 255, 0.04); color: #7c7aa6; }
+      .ts-price-feedback { text-align: center; margin-top: 16px; animation: ts-pop-in 0.32s ease; }
+      .ts-price-feedback-text { font-size: 14px; color: #d9d6f0; line-height: 1.6; max-width: 440px; margin: 0 auto; }
+
+      .ts-cta-btn {
+        margin-top: 16px; cursor: pointer; border: none; padding: 11px 28px; border-radius: 999px;
+        font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 14px;
+        background: linear-gradient(135deg, #ffd873, #f2971d); color: #3a2200; transition: filter 0.15s ease;
+      }
+      .ts-cta-btn:hover:not(:disabled) { filter: brightness(1.06); }
+      .ts-cta-btn:disabled { opacity: 0.45; cursor: default; }
+      .ts-give-btn { margin-top: 0; padding: 9px 24px; background: linear-gradient(135deg, #ff9466, #e8623a); color: #5a1e0a; }
+
+      .ts-tx-summary { display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; background: rgba(0, 0, 0, 0.16); border-radius: 14px; padding: 12px 14px; margin-bottom: 6px; }
+      .ts-tx-label { font-size: 13px; color: #c6c3ec; font-weight: 700; }
+      .ts-tx-val { font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 16px; color: #fff9ec; }
+      .ts-tx-dot { color: #8f8cc0; }
+      .ts-need-change { text-align: center; font-size: 15px; font-weight: 800; color: #ffd873; margin-bottom: 16px; }
+      .ts-need-change-big { font-size: 20px; }
+
+      .ts-tray { min-height: 56px; border: 1.5px dashed rgba(255, 255, 255, 0.22); border-radius: 14px; padding: 10px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: center; margin-bottom: 6px; }
+      .ts-tray-coin { display: inline-flex; align-items: center; justify-content: center; min-width: 40px; height: 40px; border-radius: 50%; font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 14px; color: #3a2200; box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3); border: 1.5px solid rgba(255, 255, 255, 0.5); animation: ts-drop-in 0.28s ease; }
+      .ts-tray-empty { font-size: 13px; color: #7c7aa6; }
+      .ts-tray-total { text-align: center; font-size: 13px; font-weight: 800; margin-bottom: 16px; }
+      .ts-tray-total.is-exact { color: #8fe0a8; }
+      .ts-tray-total.is-over { color: #ff9e8a; }
+      .ts-tray-total.is-under { color: #c6c3ec; }
+
+      .ts-coin-row { display: flex; gap: 12px; justify-content: center; margin-bottom: 16px; }
+      .ts-coin-btn {
+        width: 60px; height: 60px; border-radius: 50%; cursor: pointer; border: 2px solid rgba(255, 255, 255, 0.55);
+        font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 17px; color: #3a2200;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); transition: transform 0.15s ease, filter 0.15s ease;
+      }
+      .ts-coin-btn:hover:not(:disabled) { transform: translateY(-3px); filter: brightness(1.06); }
+      .ts-coin-btn:disabled { cursor: default; opacity: 0.55; }
+
+      .ts-tray-actions { display: flex; gap: 10px; justify-content: center; }
+      .ts-ghost-btn {
+        cursor: pointer; border: none; padding: 9px 18px; border-radius: 999px; font-family: 'Nunito', sans-serif;
+        font-weight: 700; font-size: 13px; background: rgba(255, 255, 255, 0.08); color: #e5e2fb; transition: background 0.15s ease;
+      }
+      .ts-ghost-btn:hover:not(:disabled) { background: rgba(255, 255, 255, 0.12); }
+      .ts-ghost-btn:disabled { opacity: 0.4; cursor: default; }
+
+      .ts-change-feedback { text-align: center; margin-top: 20px; animation: ts-pop-in 0.32s ease; }
+      .ts-change-feedback-emoji { font-size: 40px; line-height: 1; }
+      .ts-change-feedback-title { font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 19px; margin-top: 6px; }
+      .ts-change-title-good { color: #8fe0a8; }
+      .ts-change-title-hint { color: #ffd873; }
+      .ts-change-feedback-desc { font-size: 14px; color: #d9d6f0; margin-top: 6px; line-height: 1.6; max-width: 440px; margin-left: auto; margin-right: auto; }
+
+      .ts-done-card { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 22px; padding: 34px 28px; text-align: center; animation: ts-pop-in 0.32s ease; }
+      .ts-done-badge-orb {
+        width: 88px; height: 88px; margin: 0 auto 16px; border-radius: 50%;
+        background: radial-gradient(circle at 32% 28%, #ffdcc9, #ff9466 55%, #e8623a 100%);
+        box-shadow: 0 6px 18px rgba(232, 98, 58, 0.4); display: flex; align-items: center; justify-content: center;
+        font-size: 40px; animation: ts-badge-glow 2.2s ease-out infinite;
+      }
+      .ts-done-title { font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 24px; color: #fff9ec; }
+      .ts-done-score { font-size: 15px; color: #d9d6f0; margin-top: 8px; }
+      .ts-done-sub { font-size: 13px; color: #9b98cc; margin-top: 4px; }
+      .ts-done-badge-row {
+        display: inline-flex; align-items: center; gap: 12px; background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 177, 143, 0.3); border-radius: 16px; padding: 14px 20px; margin-top: 20px;
+      }
+      .ts-done-badge-icon { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #ffdcc9, #e8623a); display: flex; align-items: center; justify-content: center; font-size: 22px; }
+      .ts-done-badge-name { font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 15px; color: #fff9ec; text-align: left; }
+      .ts-done-badge-unlocked { font-size: 12px; color: #ffb18f; font-weight: 700; text-align: left; }
+      .ts-done-actions { display: flex; gap: 12px; justify-content: center; margin-top: 26px; flex-wrap: wrap; }
+      .ts-ghost-link {
+        text-decoration: none; cursor: pointer; padding: 13px 30px; border-radius: 999px; font-weight: 800;
+        font-size: 15px; background: rgba(255, 255, 255, 0.08); color: #efebff; font-family: 'Nunito', sans-serif;
+        transition: background 0.15s ease; display: inline-flex; align-items: center; justify-content: center;
+      }
+      .ts-ghost-link:hover { background: rgba(255, 255, 255, 0.16); }
 
       .lesson-detail {
         display: grid;
