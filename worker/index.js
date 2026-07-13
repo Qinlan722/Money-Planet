@@ -11,6 +11,7 @@ import { renderCoinParadeBody } from "../lessons/coin-island/coin-parade/page.js
 import { renderFairTradeStopBody } from "../lessons/coin-island/fair-trade-stop/page.js";
 import { renderWantOrNeedBody } from "../lessons/choice-forest/want-or-need/page.js";
 import { renderThreeBudgetJarsBody } from "../lessons/budget-city/three-budget-jars/page.js";
+import { renderKindNoBody } from "../lessons/choice-forest/kind-no/page.js";
 
 const INTERACTIVE_LESSON_RENDERERS = {
   "lesson-money-is": renderInteractiveLessonBody,
@@ -18,6 +19,7 @@ const INTERACTIVE_LESSON_RENDERERS = {
   "lesson-fair-trade": renderFairTradeStopBody,
   "lesson-wants-needs": renderWantOrNeedBody,
   "lesson-budget-jars": renderThreeBudgetJarsBody,
+  "lesson-kind-no": renderKindNoBody,
 };
 
 const planets = [
