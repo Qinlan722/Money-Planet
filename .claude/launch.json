@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "money-planet",
+      "runtimeExecutable": "/Users/emilyxiao/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "runtimeArgs": ["scripts/dev.js"],
+      "port": 5175,
+      "autoPort": true
+    }
+  ]
+}

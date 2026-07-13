@@ -1,0 +1,34 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls -la \"/Users/emilyxiao/Documents/Codex/2026-07-02/projects-my-site-src-public-package/money-planet-site\" 2>&1 | head -50)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(ls -la \"/Users/emilyxiao/Documents/Codex/2026-07-02/projects-my-site-src-public-package/outputs/\" 2>&1)",
+      "Bash(tar -tzf \"/Users/emilyxiao/Documents/Codex/2026-07-02/projects-my-site-src-public-package/outputs/money-planet-site-openai-sites-worker.tar.gz\")",
+      "Read(//private/tmp/mp-review/money-planet-site/worker/**)",
+      "Bash(node -e \"console.log\\('node available'\\)\")",
+      "mcp__claude-in-chrome__list_connected_browsers",
+      "Bash(ls -la \"/Users/emilyxiao/Documents/Codex/2026-07-02/projects-my-site-src-public-package/\")",
+      "Bash(python3 -)",
+      "Bash(python3 -c \"import js2py\")",
+      "Bash(pip3 list *)",
+      "Bash(cp -R __TRACKED_VAR__/worker .)",
+      "Bash(cp -R __TRACKED_VAR__/scripts .)",
+      "Bash(cp -R __TRACKED_VAR__/dist .)",
+      "Bash(cp __TRACKED_VAR__/package.json .)",
+      "Bash(cp __TRACKED_VAR__/pnpm-lock.yaml .)",
+      "Bash(git add *)",
+      "Bash(curl -s http://127.0.0.1:5175/)",
+      "Bash(ps -p 4854 -o pid,ppid,command)",
+      "Read(//Users/emilyxiao/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/**)",
+      "Bash(/Users/emilyxiao/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node -v)",
+      "Bash(git commit -m ' *)",
+      "Bash(grep -n \"^\\\\s*\\\\.mint { background\\\\|\\\\.level-card, \\\\.planet-card, \\\\.feature-card\" \"/Users/emilyxiao/Projects/my-site/worker/index.js\")",
+      "Bash(python3 -c ' *)",
+      "Bash(code --version)",
+      "Bash(ls /Applications | grep -i \"visual studio code\\\\|vscode\" 2>/dev/null; echo \"---\"; ls -la ~/.vscode 2>/dev/null | head -5)",
+      "Bash(npm install *)",
+      "Bash(which node *)"
+    ]
+  }
+}
