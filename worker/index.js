@@ -4,6 +4,8 @@ import { wantOrNeedSortMeta } from "../games/choice-forest/want-or-need-sort/met
 import { renderWantOrNeedSortBody } from "../games/choice-forest/want-or-need-sort/page.js";
 import { tinyShopkeeperMeta } from "../games/market-town/tiny-shopkeeper/meta.js";
 import { renderTinyShopkeeperBody } from "../games/market-town/tiny-shopkeeper/page.js";
+import { tradeFairMeta } from "../games/market-town/trade-fair/meta.js";
+import { renderTradeFairBody } from "../games/market-town/trade-fair/page.js";
 import { renderInteractiveLessonBody } from "../lessons/coin-island/leo-and-20-yuan/page.js";
 import { renderCoinParadeBody } from "../lessons/coin-island/coin-parade/page.js";
 import { renderFairTradeStopBody } from "../lessons/coin-island/fair-trade-stop/page.js";
@@ -126,11 +128,6 @@ const games = [
     en: "Budget Builder",
     text: "把有限的星星币分给吃、玩、存、送，看看计划会怎样变化。",
   },
-  {
-    title: "交换市集",
-    en: "Trade Fair",
-    text: "和同伴讨论一次交换，学会表达需求和尊重对方。",
-  },
 ];
 
 const resources = [
@@ -211,6 +208,7 @@ const playableGames = [
   treasureCoinHuntMeta,
   wantOrNeedSortMeta,
   tinyShopkeeperMeta,
+  tradeFairMeta,
 ];
 
 const lessons = [
@@ -1015,7 +1013,8 @@ function renderPlanetMapPage(url, planetId) {
             (window.localStorage.getItem("mp_badge_money_match") === "1" ? 1 : 0) +
             (window.localStorage.getItem("mp_badge_treasure_hunt") === "1" ? 1 : 0) +
             (window.localStorage.getItem("mp_badge_want_need_sort") === "1" ? 1 : 0) +
-            (window.localStorage.getItem("mp_badge_tiny_shopkeeper") === "1" ? 1 : 0);
+            (window.localStorage.getItem("mp_badge_tiny_shopkeeper") === "1" ? 1 : 0) +
+            (window.localStorage.getItem("mp_badge_trade_fair") === "1" ? 1 : 0);
           if (starsEl) starsEl.textContent = String(totalDone * 5) + " ★";
           if (streakEl) streakEl.textContent = String(Number(window.localStorage.getItem("mp_streak_count") || "0")) + " 天";
           if (badgesEl) badgesEl.textContent = String(badgeCount) + " 枚";
@@ -1131,6 +1130,10 @@ function renderGamePage(gameId) {
 
   if (game.kind === "shop") {
     return pageShell({ title: game.titleZh, active: "games", body: renderTinyShopkeeperBody(game, planet) });
+  }
+
+  if (game.kind === "trade") {
+    return pageShell({ title: game.titleZh, active: "games", body: renderTradeFairBody(game, planet) });
   }
 
   return renderMoneyMatchGame(game, planet);
@@ -2617,6 +2620,130 @@ function siteStyles() {
         transition: background 0.15s ease; display: inline-flex; align-items: center; justify-content: center;
       }
       .ts-ghost-link:hover { background: rgba(255, 255, 255, 0.16); }
+
+      /* Trade Fair game (tf-*) */
+      @keyframes tf-pop-in { 0% { opacity: 0; transform: translateY(14px) scale(0.94); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+      @keyframes tf-item-in { 0% { opacity: 0; transform: scale(0.6) translateY(10px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
+      @keyframes tf-stamp-in { 0% { opacity: 0; transform: scale(1.6) rotate(-12deg); } 60% { opacity: 1; transform: scale(0.92) rotate(-8deg); } 100% { transform: scale(1) rotate(-8deg); } }
+      @keyframes tf-badge-glow { 0%, 100% { box-shadow: 0 0 0 0 rgba(242, 151, 29, 0.5); } 50% { box-shadow: 0 0 0 12px rgba(242, 151, 29, 0); } }
+      @keyframes tf-confetti-fall { 0% { opacity: 1; transform: translateY(0) rotate(0); } 100% { opacity: 0; transform: translateY(270px) rotate(560deg); } }
+      .tf-root { max-width: 640px; margin: 0 auto; font-family: 'Nunito', sans-serif; }
+      .tf-hl-gold { color: #ffd873; }
+      .tf-hl-green { color: #8fe0a8; }
+      .tf-hl-coral { color: #ff9e8a; }
+
+      .tf-intro-card { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 22px; padding: 30px 28px; animation: tf-pop-in 0.34s ease; }
+      .tf-intro-text { font-size: 15px; line-height: 1.9; color: #d9d6f0; margin: 0 0 22px; }
+      .tf-info-row { display: flex; gap: 10px; margin-bottom: 24px; flex-wrap: wrap; }
+      .tf-info-chip { flex: 1; min-width: 150px; border-radius: 14px; padding: 14px 16px; }
+      .tf-info-chip.tf-info-accept { background: rgba(143, 224, 168, 0.1); border: 1px solid rgba(143, 224, 168, 0.3); }
+      .tf-info-chip.tf-info-adjust { background: rgba(255, 216, 115, 0.1); border: 1px solid rgba(255, 216, 115, 0.3); }
+      .tf-info-chip.tf-info-decline { background: rgba(255, 158, 138, 0.1); border: 1px solid rgba(255, 158, 138, 0.3); }
+      .tf-info-icon { font-size: 22px; }
+      .tf-info-chip.tf-info-accept .tf-info-title { font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 14px; color: #8fe0a8; margin-top: 4px; }
+      .tf-info-chip.tf-info-adjust .tf-info-title { font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 14px; color: #ffd873; margin-top: 4px; }
+      .tf-info-chip.tf-info-decline .tf-info-title { font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 14px; color: #ff9e8a; margin-top: 4px; }
+      .tf-info-chip.tf-info-accept .tf-info-sub { font-size: 12px; color: #b9d9c4; margin-top: 2px; }
+      .tf-info-chip.tf-info-adjust .tf-info-sub { font-size: 12px; color: #e6d9ae; margin-top: 2px; }
+      .tf-info-chip.tf-info-decline .tf-info-sub { font-size: 12px; color: #e6c3b4; margin-top: 2px; }
+      .tf-start-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+      .tf-start-btn {
+        cursor: pointer; border: none; padding: 14px 34px; border-radius: 999px; font-family: 'Nunito', sans-serif;
+        font-weight: 800; font-size: 16px; background: linear-gradient(135deg, #ffd873, #f2971d); color: #3a2200;
+      }
+      .tf-start-btn:hover { filter: brightness(1.06); }
+      .tf-total-note { font-size: 13px; color: #8f8cc0; }
+
+      .tf-progress-row { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+      .tf-progress-track { flex: 1; height: 10px; border-radius: 999px; background: rgba(255, 255, 255, 0.1); overflow: hidden; }
+      .tf-progress-fill { height: 100%; background: linear-gradient(90deg, #ffd873, #f2971d); border-radius: 999px; transition: width 0.4s ease; }
+      .tf-progress-label { font-size: 13px; font-weight: 800; color: #c6c3ec; flex-shrink: 0; }
+      .tf-score-chip { display: inline-flex; align-items: center; gap: 5px; background: rgba(255, 255, 255, 0.08); padding: 5px 12px; border-radius: 999px; flex-shrink: 0; font-weight: 800; font-size: 13px; color: #ffefc9; }
+
+      .tf-offer {
+        background: linear-gradient(180deg, rgba(255, 201, 74, 0.14), rgba(255, 201, 74, 0.05));
+        border: 1px solid rgba(255, 216, 115, 0.28); border-radius: 22px 22px 0 0; padding: 20px 22px;
+        display: flex; align-items: center; gap: 16px;
+      }
+      .tf-npc-emoji { font-size: 46px; line-height: 1; flex-shrink: 0; }
+      .tf-npc-bubble { background: rgba(255, 255, 255, 0.96); color: #5a3300; font-size: 14px; font-weight: 700; padding: 11px 16px; border-radius: 14px 14px 14px 3px; box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2); line-height: 1.5; }
+      .tf-body { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-top: none; border-radius: 0 0 22px 22px; padding: 24px 22px; }
+
+      .tf-trade-row { display: flex; align-items: stretch; justify-content: center; gap: 12px; margin-bottom: 16px; }
+      .tf-item-card { flex: 1; max-width: 200px; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 18px; padding: 16px 12px; text-align: center; }
+      .tf-item-card-yours { background: rgba(255, 216, 115, 0.08); border: 1.5px solid rgba(255, 216, 115, 0.4); }
+      .tf-item-label { font-size: 11px; font-weight: 800; color: #9b98cc; margin-bottom: 6px; }
+      .tf-item-label-yours { color: #ffd873; }
+      .tf-item-box { width: 64px; height: 64px; margin: 0 auto; border-radius: 16px; background: linear-gradient(160deg, #ffffff, #fbeed2); box-shadow: 0 6px 14px rgba(0, 0, 0, 0.28); display: flex; align-items: center; justify-content: center; font-size: 34px; animation: tf-item-in 0.3s ease; }
+      .tf-item-name { font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 15px; color: #fff9ec; margin-top: 8px; }
+      .tf-item-en { font-size: 11px; color: #9b98cc; font-weight: 700; }
+      .tf-item-stars { margin-top: 6px; font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 14px; color: #ffc94a; }
+      .tf-trade-arrow { display: flex; align-items: center; font-size: 24px; color: #ffd873; }
+
+      .tf-verdict { text-align: center; font-size: 13px; font-weight: 800; margin-bottom: 6px; }
+      .tf-verdict-fair { color: #8fe0a8; }
+      .tf-verdict-warn { color: #ffd873; }
+      .tf-need-warning { text-align: center; font-size: 13px; font-weight: 700; color: #ff9e8a; margin-bottom: 6px; }
+
+      .tf-options { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
+      .tf-option {
+        display: flex; align-items: center; gap: 12px; width: 100%; cursor: pointer; border: 1.5px solid rgba(255, 255, 255, 0.14);
+        padding: 12px 18px; border-radius: 16px; background: rgba(255, 255, 255, 0.06); color: #efebff;
+        font-family: 'Nunito', sans-serif; transition: all 0.18s ease; text-align: left;
+      }
+      .tf-option:hover:not(:disabled) { filter: brightness(1.08); transform: translateY(-2px); }
+      .tf-option:disabled { cursor: default; }
+      .tf-option.is-correct { background: rgba(111, 208, 140, 0.22); color: #bff0ce; border-color: rgba(143, 224, 168, 0.55); }
+      .tf-option.is-wrong { background: rgba(224, 90, 90, 0.2); color: #ffd3d3; border-color: rgba(224, 120, 120, 0.5); }
+      .tf-option.is-dim { background: rgba(255, 255, 255, 0.03); color: #7c7aa6; }
+      .tf-option-emoji { font-size: 20px; }
+      .tf-option-text { display: flex; flex-direction: column; }
+      .tf-option-label { font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 15px; }
+      .tf-option-en { font-size: 11px; opacity: 0.75; }
+
+      .tf-feedback { position: relative; text-align: center; margin-top: 20px; animation: tf-pop-in 0.34s ease; }
+      .tf-confetti { position: absolute; left: 0; right: 0; top: -6px; height: 0; pointer-events: none; overflow: visible; }
+      .tf-confetti-done { top: 0; }
+      .tf-confetti-piece { position: absolute; top: 0; border-radius: 2px; animation-name: tf-confetti-fall; animation-timing-function: ease-in; animation-fill-mode: forwards; }
+      .tf-stamp { display: inline-block; font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 15px; padding: 6px 16px; border-radius: 10px; border: 2px solid; letter-spacing: 1px; animation: tf-stamp-in 0.4s cubic-bezier(.2,.9,.3,1.4); }
+      .tf-reaction-row { display: flex; align-items: center; gap: 10px; justify-content: center; margin-top: 16px; }
+      .tf-reaction-emoji { font-size: 34px; flex-shrink: 0; }
+      .tf-reaction-bubble { background: rgba(255, 255, 255, 0.96); color: #5a3300; font-size: 13px; font-weight: 700; padding: 10px 14px; border-radius: 14px 14px 14px 3px; box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2); line-height: 1.5; max-width: 360px; text-align: left; }
+      .tf-result-desc { font-size: 14px; color: #d9d6f0; margin-top: 14px; line-height: 1.6; max-width: 450px; margin-left: auto; margin-right: auto; }
+      .tf-streak-chip { display: inline-block; margin-top: 12px; font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 14px; color: #ffb74a; background: rgba(255, 183, 74, 0.14); border: 1px solid rgba(255, 183, 74, 0.4); padding: 4px 14px; border-radius: 999px; }
+      .tf-best-hint { font-size: 13px; color: #ffd873; font-weight: 700; margin-top: 8px; }
+      .tf-cta-btn {
+        margin-top: 18px; cursor: pointer; border: none; padding: 12px 30px; border-radius: 999px;
+        font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 15px;
+        background: linear-gradient(135deg, #ffd873, #f2971d); color: #3a2200; transition: filter 0.15s ease;
+      }
+      .tf-cta-btn:hover { filter: brightness(1.06); }
+
+      .tf-done-card { position: relative; overflow: hidden; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 22px; padding: 34px 28px; text-align: center; animation: tf-pop-in 0.34s ease; }
+      .tf-done-badge-orb {
+        width: 88px; height: 88px; margin: 0 auto 16px; border-radius: 50%;
+        background: radial-gradient(circle at 32% 28%, #ffe9b8, #ffc94a 55%, #f2971d 100%);
+        box-shadow: 0 6px 18px rgba(242, 151, 29, 0.4); display: flex; align-items: center; justify-content: center;
+        font-size: 40px; animation: tf-badge-glow 2.2s ease-out infinite;
+      }
+      .tf-done-title { font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 24px; color: #fff9ec; }
+      .tf-done-score { font-size: 15px; color: #d9d6f0; margin-top: 8px; }
+      .tf-done-hearts { font-size: 22px; margin-top: 10px; letter-spacing: 3px; }
+      .tf-done-hearts-label { font-size: 12px; color: #9b98cc; margin-top: 2px; }
+      .tf-done-badge-row {
+        display: inline-flex; align-items: center; gap: 12px; background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 216, 115, 0.3); border-radius: 16px; padding: 14px 20px; margin-top: 20px;
+      }
+      .tf-done-badge-icon { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #ffe9b8, #f2971d); display: flex; align-items: center; justify-content: center; font-size: 22px; }
+      .tf-done-badge-name { font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 15px; color: #fff9ec; text-align: left; }
+      .tf-done-badge-unlocked { font-size: 12px; color: #ffd873; font-weight: 700; text-align: left; }
+      .tf-done-actions { display: flex; gap: 12px; justify-content: center; margin-top: 26px; flex-wrap: wrap; }
+      .tf-ghost-link {
+        text-decoration: none; cursor: pointer; padding: 13px 30px; border-radius: 999px; font-weight: 800;
+        font-size: 15px; background: rgba(255, 255, 255, 0.08); color: #efebff; font-family: 'Nunito', sans-serif;
+        transition: background 0.15s ease; display: inline-flex; align-items: center; justify-content: center;
+      }
+      .tf-ghost-link:hover { background: rgba(255, 255, 255, 0.16); }
 
       .lesson-detail {
         display: grid;
