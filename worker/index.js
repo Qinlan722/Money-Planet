@@ -6,6 +6,8 @@ import { tinyShopkeeperMeta } from "../games/market-town/tiny-shopkeeper/meta.js
 import { renderTinyShopkeeperBody } from "../games/market-town/tiny-shopkeeper/page.js";
 import { tradeFairMeta } from "../games/market-town/trade-fair/meta.js";
 import { renderTradeFairBody } from "../games/market-town/trade-fair/page.js";
+import { budgetBuilderMeta } from "../games/budget-city/budget-builder/meta.js";
+import { renderBudgetBuilderBody } from "../games/budget-city/budget-builder/page.js";
 import { renderInteractiveLessonBody } from "../lessons/coin-island/leo-and-20-yuan/page.js";
 import { renderCoinParadeBody } from "../lessons/coin-island/coin-parade/page.js";
 import { renderFairTradeStopBody } from "../lessons/coin-island/fair-trade-stop/page.js";
@@ -213,6 +215,7 @@ const playableGames = [
   wantOrNeedSortMeta,
   tinyShopkeeperMeta,
   tradeFairMeta,
+  budgetBuilderMeta,
 ];
 
 const lessons = [
@@ -1138,6 +1141,10 @@ function renderGamePage(gameId) {
 
   if (game.kind === "trade") {
     return pageShell({ title: game.titleZh, active: "games", body: renderTradeFairBody(game, planet) });
+  }
+
+  if (game.kind === "budget") {
+    return pageShell({ title: game.titleZh, active: "games", body: renderBudgetBuilderBody(game, planet) });
   }
 
   return renderMoneyMatchGame(game, planet);
@@ -2748,6 +2755,139 @@ function siteStyles() {
         transition: background 0.15s ease; display: inline-flex; align-items: center; justify-content: center;
       }
       .tf-ghost-link:hover { background: rgba(255, 255, 255, 0.16); }
+
+      @keyframes bb-bar-grow { from { width: 0; } }
+
+      .bb-root { max-width: 720px; margin: 0 auto; font-family: 'Nunito', sans-serif; }
+      .bb-hl-gold { color: #ffd873; }
+      .bb-hl-blue { color: #8fc3f5; }
+      .bb-hl-coral { color: #ff9e8a; }
+
+      .bb-intro-card { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 22px; padding: 30px 28px; animation: tf-pop-in 0.34s ease; }
+      .bb-intro-text { font-size: 15px; line-height: 1.9; color: #d9d6f0; margin: 0 0 22px; }
+      .bb-cat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 24px; }
+      .bb-cat-chip { border-radius: 14px; padding: 14px 8px; text-align: center; }
+      .bb-cat-chip-icon { font-size: 26px; }
+      .bb-cat-chip-label { font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 14px; margin-top: 4px; }
+
+      .bb-start-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+      .bb-start-btn {
+        cursor: pointer; border: none; padding: 14px 34px; border-radius: 999px; font-family: 'Nunito', sans-serif;
+        font-weight: 800; font-size: 16px; background: linear-gradient(135deg, #5ca9f2, #2e6fd9); color: #0a2447;
+      }
+      .bb-start-btn:hover { filter: brightness(1.06); }
+      .bb-total-note { font-size: 13px; color: #8f8cc0; }
+
+      .bb-progress-row { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+      .bb-progress-track { flex: 1; height: 10px; border-radius: 999px; background: rgba(255, 255, 255, 0.1); overflow: hidden; }
+      .bb-progress-fill { height: 100%; background: linear-gradient(90deg, #5ca9f2, #2e6fd9); border-radius: 999px; transition: width 0.4s ease; }
+      .bb-progress-label { font-size: 13px; font-weight: 800; color: #c6c3ec; flex-shrink: 0; }
+      .bb-score-chip { display: inline-flex; align-items: center; gap: 5px; background: rgba(255, 255, 255, 0.08); padding: 5px 12px; border-radius: 999px; flex-shrink: 0; font-weight: 800; font-size: 13px; color: #ffefc9; }
+
+      .bb-scenario {
+        background: linear-gradient(180deg, rgba(92, 169, 242, 0.14), rgba(92, 169, 242, 0.05)); border: 1px solid rgba(143, 195, 245, 0.28);
+        border-radius: 22px 22px 0 0; padding: 18px 22px; display: flex; align-items: center; gap: 16px;
+      }
+      .bb-scenario-emoji { font-size: 40px; line-height: 1; flex-shrink: 0; }
+      .bb-scenario-title { font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 17px; color: #fff9ec; }
+      .bb-scenario-en { font-size: 13px; color: #9bb8da; font-weight: 600; margin-left: 6px; }
+      .bb-scenario-line { font-size: 13px; color: #d9d6f0; line-height: 1.5; margin-top: 3px; }
+      .bb-body { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-top: none; border-radius: 0 0 22px 22px; padding: 22px; }
+
+      .bb-pool-row { display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; min-height: 26px; }
+      .bb-pool-label { font-size: 12px; color: #9b98cc; font-weight: 700; margin-right: 2px; }
+      .bb-pool-star { font-size: 17px; }
+      .bb-pool-empty { font-size: 13px; color: #8fe0a8; font-weight: 800; }
+      .bb-budget-note { text-align: center; font-size: 12px; color: #8f8cc0; margin-bottom: 16px; }
+
+      .bb-jar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 18px; }
+      .bb-jar-wrap { position: relative; }
+      .bb-jar-btn {
+        display: block; width: 100%; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 18px; padding: 12px 8px; cursor: pointer; color: inherit; font-family: inherit; text-align: center;
+        transition: background 0.15s ease, transform 0.15s ease;
+      }
+      .bb-jar-btn:not(:disabled):hover { background: rgba(92, 169, 242, 0.14); transform: translateY(-2px); }
+      .bb-jar-btn:disabled { cursor: default; }
+      .bb-jar-emoji { font-size: 28px; line-height: 1; }
+      .bb-jar-name { font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 14px; color: #fff9ec; margin-top: 3px; }
+      .bb-jar-pips { min-height: 40px; display: flex; flex-wrap: wrap; gap: 3px; justify-content: center; align-items: flex-end; margin: 8px 2px 4px; }
+      .bb-jar-pip { display: inline-block; width: 14px; height: 14px; border-radius: 50%; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.35); animation: tf-item-in 0.26s ease; }
+      .bb-jar-count { font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 22px; }
+      .bb-jar-hint { font-size: 10px; color: #8fb3da; font-weight: 700; }
+      .bb-jar-minus {
+        position: absolute; top: 8px; right: 8px; width: 26px; height: 26px; border-radius: 8px; cursor: pointer;
+        border: 1.5px solid rgba(255, 255, 255, 0.2); background: rgba(18, 20, 58, 0.7); color: #fff9ec;
+        font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 16px; line-height: 1; transition: filter 0.15s ease;
+      }
+      .bb-jar-minus:hover:not(:disabled) { filter: brightness(1.15); }
+      .bb-jar-minus:disabled { opacity: 0.3; cursor: default; }
+
+      .bb-checklist { background: rgba(0, 0, 0, 0.16); border-radius: 14px; padding: 12px 16px; margin-bottom: 16px; }
+      .bb-checklist-title { font-size: 12px; font-weight: 800; color: #9b98cc; margin-bottom: 8px; }
+      .bb-checklist-rows { display: flex; flex-direction: column; gap: 6px; }
+      .bb-checklist-row { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: #d9d6f0; }
+      .bb-checklist-mark { font-family: 'Fredoka', sans-serif; font-size: 15px; width: 16px; text-align: center; }
+
+      .bb-confirm-row { display: flex; justify-content: center; }
+      .bb-confirm-btn {
+        cursor: pointer; border: none; padding: 12px 30px; border-radius: 999px; font-family: 'Nunito', sans-serif;
+        font-weight: 800; font-size: 15px; background: linear-gradient(135deg, #5ca9f2, #2e6fd9); color: #0a2447;
+        transition: filter 0.15s ease;
+      }
+      .bb-confirm-btn:hover:not(:disabled) { filter: brightness(1.06); }
+      .bb-confirm-btn:disabled { opacity: 0.45; cursor: default; }
+
+      .bb-feedback { position: relative; text-align: center; margin-top: 20px; animation: tf-pop-in 0.34s ease; }
+      .bb-feedback-emoji { font-size: 40px; line-height: 1; }
+      .bb-feedback-title { font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 19px; margin-top: 6px; }
+      .bb-streak-chip { display: inline-block; margin-top: 8px; font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 14px; color: #ffb74a; background: rgba(255, 183, 74, 0.14); border: 1px solid rgba(255, 183, 74, 0.4); padding: 4px 14px; border-radius: 999px; }
+      .bb-feedback-reaction { display: inline-flex; align-items: center; gap: 10px; background: rgba(255, 255, 255, 0.06); border-radius: 14px; padding: 10px 14px; margin-top: 12px; max-width: 440px; }
+      .bb-feedback-reaction-emoji { font-size: 26px; flex-shrink: 0; }
+      .bb-feedback-reaction-text { font-size: 13px; color: #d9d6f0; line-height: 1.5; text-align: left; }
+      .bb-feedback-actions { margin-top: 18px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+      .bb-retry-btn { cursor: pointer; border: none; padding: 11px 26px; border-radius: 999px; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 14px; background: linear-gradient(135deg, #5ca9f2, #2e6fd9); color: #0a2447; }
+      .bb-skip-btn { cursor: pointer; border: none; padding: 11px 26px; border-radius: 999px; font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 14px; background: rgba(255, 255, 255, 0.08); color: #e5e2fb; transition: background 0.15s ease; }
+      .bb-skip-btn:hover { background: rgba(255, 255, 255, 0.12); }
+      .bb-next-btn { cursor: pointer; border: none; padding: 12px 30px; border-radius: 999px; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 15px; background: linear-gradient(135deg, #ffd873, #f2971d); color: #3a2200; }
+
+      .bb-confetti { position: absolute; left: 0; right: 0; top: -6px; height: 0; pointer-events: none; overflow: visible; }
+      .bb-confetti-done { top: 0; }
+      .bb-confetti-piece { position: absolute; top: 0; border-radius: 2px; animation-name: tf-confetti-fall; animation-timing-function: ease-in; animation-fill-mode: forwards; }
+
+      .bb-done-card { position: relative; overflow: hidden; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 22px; padding: 34px 28px; text-align: center; animation: tf-pop-in 0.34s ease; }
+      .bb-done-badge-orb {
+        width: 88px; height: 88px; margin: 0 auto 16px; border-radius: 50%; background: radial-gradient(circle at 32% 28%, #cbe4fb, #5ca9f2 55%, #2e6fd9 100%);
+        box-shadow: 0 6px 18px rgba(46, 111, 217, 0.4); display: flex; align-items: center; justify-content: center; font-size: 40px; animation: tf-badge-glow 2.2s ease-out infinite;
+      }
+      .bb-done-title { font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 24px; color: #fff9ec; }
+      .bb-done-score { font-size: 15px; color: #d9d6f0; margin-top: 8px; }
+      .bb-done-score b { color: #8fc3f5; }
+
+      .bb-bars { margin-top: 22px; max-width: 380px; margin-left: auto; margin-right: auto; }
+      .bb-bars-title { font-size: 12px; font-weight: 800; color: #9b98cc; margin-bottom: 12px; }
+      .bb-bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 9px; }
+      .bb-bar-emoji { width: 20px; font-size: 17px; }
+      .bb-bar-name { width: 24px; font-size: 12px; color: #c6c3ec; font-weight: 700; text-align: left; }
+      .bb-bar-track { flex: 1; height: 15px; border-radius: 999px; background: rgba(255, 255, 255, 0.08); overflow: hidden; }
+      .bb-bar-fill { height: 100%; border-radius: 999px; animation: bb-bar-grow 0.6s ease; }
+      .bb-bar-val { width: 24px; font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 13px; color: #fff9ec; text-align: right; }
+
+      .bb-done-badge-row {
+        display: inline-flex; align-items: center; gap: 12px; background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(143, 195, 245, 0.3);
+        border-radius: 16px; padding: 14px 20px; margin-top: 22px;
+      }
+      .bb-done-badge-icon { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #cbe4fb, #2e6fd9); display: flex; align-items: center; justify-content: center; font-size: 22px; }
+      .bb-done-badge-name { font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 15px; color: #fff9ec; text-align: left; }
+      .bb-done-badge-unlocked { font-size: 12px; color: #8fc3f5; font-weight: 700; text-align: left; }
+
+      .bb-done-actions { display: flex; gap: 12px; justify-content: center; margin-top: 26px; flex-wrap: wrap; }
+      .bb-ghost-link {
+        text-decoration: none; cursor: pointer; padding: 13px 30px; border-radius: 999px; font-weight: 800;
+        font-size: 15px; background: rgba(255, 255, 255, 0.08); color: #efebff; font-family: 'Nunito', sans-serif;
+        transition: background 0.15s ease; display: inline-flex; align-items: center; justify-content: center;
+      }
+      .bb-ghost-link:hover { background: rgba(255, 255, 255, 0.16); }
 
       .lesson-detail {
         display: grid;
