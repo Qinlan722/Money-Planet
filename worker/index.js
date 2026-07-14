@@ -12,6 +12,7 @@ import { renderFairTradeStopBody } from "../lessons/coin-island/fair-trade-stop/
 import { renderWantOrNeedBody } from "../lessons/choice-forest/want-or-need/page.js";
 import { renderThreeBudgetJarsBody } from "../lessons/budget-city/three-budget-jars/page.js";
 import { renderKindNoBody } from "../lessons/choice-forest/kind-no/page.js";
+import { renderSpendingPlanBody } from "../lessons/budget-city/spending-plan/page.js";
 
 const INTERACTIVE_LESSON_RENDERERS = {
   "lesson-money-is": renderInteractiveLessonBody,
@@ -20,6 +21,7 @@ const INTERACTIVE_LESSON_RENDERERS = {
   "lesson-wants-needs": renderWantOrNeedBody,
   "lesson-budget-jars": renderThreeBudgetJarsBody,
   "lesson-kind-no": renderKindNoBody,
+  "lesson-spending-plan": renderSpendingPlanBody,
 };
 
 const planets = [
@@ -3201,6 +3203,19 @@ function siteStyles() {
       .il-bank-coins { font-size: 26px; letter-spacing: 2px; min-height: 32px; margin-top: 4px; }
       .il-bank-remaining { font-size: 15px; color: #9fbdf0; margin-top: 2px; }
       .il-bank-remaining strong { font-family: 'Baloo 2', sans-serif; font-size: 20px; color: #ffd766; font-weight: 800; }
+
+      .il-cat-row { display: flex; align-items: center; gap: 14px; background: rgba(255, 255, 255, 0.06); border: 2px solid rgba(255, 255, 255, 0.14); border-radius: 18px; padding: 12px 14px; }
+      .il-cat-emoji { font-size: 34px; }
+      .il-cat-body { flex: 1; min-width: 0; }
+      .il-cat-name-row { display: flex; align-items: center; gap: 8px; }
+      .il-cat-name { font-family: 'ZCOOL KuaiLe', sans-serif; font-size: 18px; color: #fff; }
+      .il-cat-tag { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; }
+      .il-cat-track { position: relative; height: 16px; border-radius: 8px; background: rgba(0, 0, 0, 0.25); overflow: hidden; margin-top: 6px; }
+      .il-cat-fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 8px; transition: width 0.25s ease; }
+      .il-cat-controls { display: flex; align-items: center; gap: 8px; }
+      .il-cat-btn { width: 36px; height: 36px; border-radius: 50%; border: 2px solid rgba(255, 255, 255, 0.3); background: rgba(255, 255, 255, 0.12); color: #fff; font-size: 22px; font-weight: 800; cursor: pointer; font-family: 'Baloo 2', sans-serif; }
+      .il-cat-btn:active { transform: scale(0.9); }
+      .il-cat-count { font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: 20px; color: #ffd766; min-width: 22px; text-align: center; }
 
       .il-jar-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
       .il-jar-card { display: flex; flex-direction: column; align-items: center; gap: 8px; background: rgba(255, 255, 255, 0.06); border: 2px solid rgba(255, 255, 255, 0.14); border-radius: 18px; padding: 14px 8px; }
