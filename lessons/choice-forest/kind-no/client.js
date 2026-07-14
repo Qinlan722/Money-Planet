@@ -30,7 +30,7 @@ export const clientScript = `
   };
 
   var CARD_DEFS = [
-    { key: "ok", emoji: "🙂", en: "Saying no is ok.", zh: "拒绝也能有礼貌", border: "#8fdcc8" },
+    { key: "ok", emoji: "🙂", en: "Saying no is ok.", zh: "拒绝也能有礼貌", border: "#6ee0c8" },
     { key: "recipe", emoji: "🌸", en: "Thanks + reason + next.", zh: "温柔拒绝配方", border: "#ffc14d" },
     { key: "plan", emoji: "🛡️", en: "Your plan is a shield.", zh: "计划是小盾牌", border: "#9fc6ff" },
   ];
@@ -324,9 +324,9 @@ export const clientScript = `
         '<span style="font-size:22px;margin-right:6px;">🗨️</span>' + bubbleText + "</div>";
 
       var groupDefs = [
-        { key: "open", title: "1️⃣ 先谢谢" },
-        { key: "reason", title: "2️⃣ 说理由" },
-        { key: "close", title: "3️⃣ 留温暖" },
+        { key: "open", title: "1️⃣ 先谢谢", accent: "#2fa864" },
+        { key: "reason", title: "2️⃣ 说理由", accent: "#c07800" },
+        { key: "close", title: "3️⃣ 留温暖", accent: "#2a5fb0" },
       ];
       html += '<div style="display:flex;flex-direction:column;gap:12px;margin-top:14px;">';
       groupDefs.forEach(function (g) {
@@ -336,8 +336,8 @@ export const clientScript = `
           var on = sel[g.key] === i;
           var style = "font-family:'Noto Sans SC', sans-serif;font-size:13px;font-weight:700;padding:9px 14px;border-radius:999px;cursor:pointer;line-height:1.4;" +
             (on
-              ? "background:#2fa864;color:#fff;border:2px solid #fff;box-shadow:0 2px 0 rgba(0,0,0,.25);transform:translateY(1px);"
-              : "background:rgba(255,255,255,.92);color:#23402c;border:2px solid #2fa864;box-shadow:0 3px 0 #2fa864;");
+              ? "background:" + g.accent + ";color:#fff;border:2px solid #fff;box-shadow:0 2px 0 rgba(0,0,0,.25);transform:translateY(1px);"
+              : "background:rgba(255,255,255,.92);color:#23402c;border:2px solid " + g.accent + ";box-shadow:0 3px 0 " + g.accent + ";");
           html += '<button type="button" data-group="' + g.key + '" data-idx="' + i + '" style="' + style + '">' + text + "</button>";
         });
         html += "</div></div>";
