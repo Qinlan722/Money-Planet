@@ -16,6 +16,7 @@ import { renderThreeBudgetJarsBody } from "../lessons/budget-city/three-budget-j
 import { renderKindNoBody } from "../lessons/choice-forest/kind-no/page.js";
 import { renderSpendingPlanBody } from "../lessons/budget-city/spending-plan/page.js";
 import { renderPriceDetectiveBody } from "../lessons/market-town/price-detective/page.js";
+import { renderTrackSpendingBody } from "../lessons/budget-city/track-spending/page.js";
 
 const INTERACTIVE_LESSON_RENDERERS = {
   "lesson-money-is": renderInteractiveLessonBody,
@@ -26,6 +27,7 @@ const INTERACTIVE_LESSON_RENDERERS = {
   "lesson-kind-no": renderKindNoBody,
   "lesson-spending-plan": renderSpendingPlanBody,
   "lesson-price-compare": renderPriceDetectiveBody,
+  "lesson-track-spending": renderTrackSpendingBody,
 };
 
 const planets = [
@@ -3462,6 +3464,86 @@ function siteStyles() {
       .il-badge-orb-market {
         background: radial-gradient(circle at 35% 30%, #ffe0c4, #ff9a4d 75%); border-color: #fff2e6;
       }
+
+      /* Where Did It Go (lesson: track-spending) sorting-card game */
+      @keyframes wd-spin { 0% { transform: rotate(-8deg) scale(0.5); opacity: 0; } 100% { transform: rotate(0) scale(1); opacity: 1; } }
+
+      .wd-card { background: #1a2148; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 24px; padding: 30px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); animation: pop-in-il 0.4s ease; color: #dfe4fb; }
+      .wd-intro-text { margin: 0 0 20px; font-size: 17px; line-height: 1.7; }
+
+      .wd-cat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+      .wd-cat-chip { border-radius: 18px; padding: 18px; text-align: center; }
+      .wd-cat-chip-spent { background: rgba(255, 138, 61, 0.12); border: 2px solid rgba(255, 138, 61, 0.35); }
+      .wd-cat-chip-free { background: rgba(63, 207, 162, 0.12); border: 2px solid rgba(63, 207, 162, 0.35); }
+      .wd-cat-chip-icon { font-size: 34px; }
+      .wd-cat-chip-title { font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 18px; }
+      .wd-cat-chip-sub { font-size: 13px; margin-top: 2px; }
+
+      .wd-start-row { display: flex; align-items: center; gap: 16px; margin-top: 24px; flex-wrap: wrap; }
+      .wd-start-btn {
+        background: linear-gradient(135deg, #ffb84d, #ff8a3d); color: #4a2c00; border: none; border-radius: 999px;
+        padding: 14px 30px; font-size: 17px; font-weight: 800; cursor: pointer; box-shadow: 0 8px 20px rgba(255, 138, 61, 0.35);
+        transition: transform 0.15s ease;
+      }
+      .wd-start-btn:hover { transform: translateY(-2px); }
+      .wd-total-note { font-size: 14px; color: #8b97bf; font-weight: 700; }
+
+      .wd-progress-row { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+      .wd-progress-track { flex: 1; height: 12px; border-radius: 999px; background: rgba(255, 255, 255, 0.1); overflow: hidden; }
+      .wd-progress-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, #5aa0ff, #2f6df0); transition: width 0.4s ease; }
+      .wd-progress-label { font-weight: 700; font-size: 14px; color: #8b97bf; }
+      .wd-score-chip { background: rgba(255, 201, 77, 0.15); border: 2px solid rgba(255, 201, 77, 0.4); border-radius: 999px; padding: 4px 12px; font-weight: 800; font-size: 14px; color: #ffc94d; }
+
+      .wd-panel { background: #1a2148; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 24px; padding: 26px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3); min-height: 200px; display: flex; align-items: center; justify-content: center; }
+      .wd-panel-inner { text-align: center; animation: pop-in-il 0.35s ease; width: 100%; }
+
+      .wd-card-emoji { font-size: 76px; line-height: 1; }
+      .wd-card-name { font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 26px; margin-top: 8px; color: #eef1ff; }
+      .wd-card-en { font-size: 15px; color: #8b97bf; font-weight: 700; }
+      .wd-card-hint { font-size: 14px; color: #aab4d6; margin-top: 12px; }
+
+      .wd-feedback-emoji { font-size: 46px; }
+      .wd-feedback-title { font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 24px; margin-top: 6px; }
+      .wd-feedback-desc { font-size: 16px; line-height: 1.6; color: #cfd6f2; margin-top: 6px; }
+
+      .wd-reason-label { font-size: 14px; font-weight: 800; color: #8b97bf; margin: 18px 0 10px; }
+      .wd-reason-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+      .wd-reason-btn { border-radius: 999px; padding: 10px 18px; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.2s ease; border: 2px solid rgba(255, 255, 255, 0.2); background: rgba(255, 255, 255, 0.06); color: #dfe4fb; }
+      .wd-reason-btn.is-chosen { background: #3a63c7; color: #fff; border-color: #3a63c7; }
+      .wd-reason-btn.is-dim { background: rgba(255, 255, 255, 0.04); color: #6b769a; border-color: rgba(255, 255, 255, 0.08); }
+
+      .wd-next-btn {
+        margin-top: 22px; background: linear-gradient(135deg, #5aa0ff, #2f6df0); color: #fff; border: none; border-radius: 999px;
+        padding: 12px 28px; font-size: 16px; font-weight: 800; cursor: pointer; box-shadow: 0 8px 20px rgba(47, 109, 240, 0.3);
+        transition: transform 0.15s ease;
+      }
+      .wd-next-btn:hover { transform: translateY(-2px); }
+
+      .wd-basket-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 16px; }
+      .wd-basket { border-radius: 18px; padding: 14px 12px 12px; cursor: pointer; transition: all 0.2s ease; width: 100%; border: 2px dashed; background: none; font-family: inherit; }
+      .wd-basket:disabled { cursor: default; }
+      .wd-basket-spent { background: rgba(255, 138, 61, 0.1); border-color: rgba(255, 138, 61, 0.6); }
+      .wd-basket-spent.is-placed { border-style: solid; border-color: rgba(255, 138, 61, 0.3); opacity: 0.85; }
+      .wd-basket-free { background: rgba(63, 207, 162, 0.1); border-color: rgba(63, 207, 162, 0.6); }
+      .wd-basket-free.is-placed { border-style: solid; border-color: rgba(63, 207, 162, 0.3); opacity: 0.85; }
+      .wd-basket-head { display: flex; align-items: center; justify-content: center; gap: 8px; }
+      .wd-basket-icon { font-size: 26px; }
+      .wd-basket-title { font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 18px; }
+      .wd-basket-title-sub { font-size: 13px; }
+      .wd-basket-pile { min-height: 34px; display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+      .wd-basket-pile-empty { font-size: 13px; color: rgba(255, 255, 255, 0.35); font-weight: 700; }
+      .wd-basket-pile-coin { font-size: 24px; }
+
+      .wd-done-emoji { font-size: 60px; }
+      .wd-done-title { font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 28px; margin-top: 6px; color: #eef1ff; }
+      .wd-done-score { font-size: 16px; color: #cfd6f2; margin-top: 8px; }
+      .wd-done-note { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 18px; padding: 18px; margin: 20px auto 0; max-width: 440px; font-size: 16px; line-height: 1.7; color: #dfe4fb; text-align: left; }
+      .wd-done-badge-row { display: flex; align-items: center; gap: 14px; justify-content: center; background: rgba(255, 201, 77, 0.12); border: 2px solid rgba(255, 201, 77, 0.35); border-radius: 18px; padding: 16px 20px; margin: 20px auto 0; max-width: 440px; }
+      .wd-done-badge-icon { font-size: 38px; animation: wd-spin 0.6s ease; }
+      .wd-done-badge-name { font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 18px; color: #eef1ff; }
+      .wd-done-badge-unlocked { font-size: 13px; color: #ffc94d; font-weight: 700; }
+      .wd-done-actions { display: flex; gap: 12px; justify-content: center; margin-top: 24px; flex-wrap: wrap; }
+      .wd-done-ghost { border: 2px solid rgba(255, 255, 255, 0.2); border-radius: 999px; padding: 11px 24px; font-size: 16px; font-weight: 800; color: #aab4d6; text-decoration: none; }
 
       /* Fair Trade Stop (lesson 5) trade-stall visuals */
       .il-border-red { border-color: #f0a0a0; box-shadow: 0 6px 0 #f0a0a0; }
