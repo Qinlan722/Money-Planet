@@ -15,6 +15,7 @@ import { renderWantOrNeedBody } from "../lessons/choice-forest/want-or-need/page
 import { renderThreeBudgetJarsBody } from "../lessons/budget-city/three-budget-jars/page.js";
 import { renderKindNoBody } from "../lessons/choice-forest/kind-no/page.js";
 import { renderSpendingPlanBody } from "../lessons/budget-city/spending-plan/page.js";
+import { renderPriceDetectiveBody } from "../lessons/market-town/price-detective/page.js";
 
 const INTERACTIVE_LESSON_RENDERERS = {
   "lesson-money-is": renderInteractiveLessonBody,
@@ -24,6 +25,7 @@ const INTERACTIVE_LESSON_RENDERERS = {
   "lesson-budget-jars": renderThreeBudgetJarsBody,
   "lesson-kind-no": renderKindNoBody,
   "lesson-spending-plan": renderSpendingPlanBody,
+  "lesson-price-compare": renderPriceDetectiveBody,
 };
 
 const planets = [
@@ -3117,6 +3119,8 @@ function siteStyles() {
       .il-bridge-bank-far { position: absolute; right: -14px; bottom: 20px; width: 150px; height: 60px; background: #3a2f6f; border-radius: 30px 20px 0 0; }
       .il-mimi { position: absolute; left: 20px; bottom: 22px; width: 58px; height: 92px; animation: bounce-soft-il 3.5s ease-in-out infinite; }
       @keyframes bounce-soft-il { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+      .il-magnify { animation: magnify-il 2.4s ease-in-out infinite; }
+      @keyframes magnify-il { 0%, 100% { transform: rotate(-8deg) translateY(0); } 50% { transform: rotate(-8deg) translateY(-6px); } }
       .il-game-target-text { text-align: center; margin-bottom: 16px; }
       .il-target-num { font-family: 'Baloo 2', sans-serif; font-size: 28px; color: #ffd766; }
       .il-total-num { font-family: 'Baloo 2', sans-serif; font-size: 22px; color: #6ee0c8; }
@@ -3393,6 +3397,70 @@ function siteStyles() {
       }
       .il-badge-orb-budget {
         background: radial-gradient(circle at 35% 30%, #cfe1ff, #5f9dff 75%); border-color: #eaf2ff;
+      }
+
+      /* Market Town (lesson 9) orange theme */
+      .il-hero-banner-market {
+        background: linear-gradient(135deg, #ffb168 0%, #ff8a3c 55%, #f5701e 100%);
+        box-shadow: 0 14px 44px rgba(245, 112, 30, 0.4);
+        color: #5a2a08;
+      }
+      .il-hero-banner-market .il-hero-eyebrow,
+      .il-hero-banner-market .il-hero-en { color: #6b3410; }
+      .il-hero-banner-market .il-hero-title { color: #5a2a08; }
+      .il-hero-banner-market .il-hero-tags span { background: rgba(255, 247, 240, 0.92); color: #6b3410; }
+
+      .il-step-market.is-active { background: linear-gradient(180deg, #ff9a4d, #f5701e); color: #5a2a08; border-color: #ffd8bd; box-shadow: 0 4px 0 rgba(0, 0, 0, 0.28); }
+
+      .il-h2-market { color: #ffcfa8; }
+
+      .il-btn-primary-market { background: linear-gradient(180deg, #ff9a4d, #f5701e); border-color: rgba(255, 255, 255, 0.5); }
+      .il-btn-ghost-market { color: #f5893c; border-color: #ffd8bd; box-shadow: 0 4px 0 #ffd8bd; }
+
+      .il-border-peach { border-color: #ffb884; box-shadow: 0 6px 0 #ffb884; }
+
+      .il-market-scene {
+        position: relative; height: 210px; margin-bottom: 20px; border-radius: 18px; overflow: hidden;
+        background: linear-gradient(180deg, #7a3d12 0%, #a5551f 55%, #c46a28 100%); border: 3px solid #ffb168;
+      }
+      .il-market-panel { background: linear-gradient(180deg, #7a3d12, #a5551f 70%, #c46a28); border: 3px solid #ffb168; border-radius: 24px; padding: 24px; box-shadow: 0 8px 0 rgba(0, 0, 0, 0.3); }
+
+      .il-explore-card-market { color: #4a2a12; }
+      .il-explore-card-market.is-open { background: #fff; }
+      .il-reveal-market { color: #4a2a12; }
+
+      .il-line-good-market { background: #ffe9d6; }
+      .il-line-bad-market { background: #fdeee6; }
+      .il-tip-market { background: #ffe9d6; color: #d9611c; }
+
+      .il-buy-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+      .il-buy-card {
+        min-height: 180px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+        border-radius: 20px; background: #fff; padding: 16px 10px; text-align: center; cursor: pointer; font-family: inherit;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+      }
+      .il-buy-card:disabled { cursor: default; }
+      .il-buy-emoji { font-size: 52px; }
+      .il-buy-name { font-family: 'ZCOOL KuaiLe', sans-serif; font-size: 18px; color: #4a2a12; }
+      .il-buy-qty { font-size: 14px; font-weight: 700; color: #a64d10; }
+      .il-buy-price { background: #ffd766; color: #6b4a00; font-family: 'Baloo 2', sans-serif; font-weight: 800; font-size: 17px; padding: 3px 12px; border-radius: 999px; }
+      .il-buy-unit { font-size: 12px; font-weight: 700; min-height: 16px; transition: color 0.2s ease; }
+
+      .il-rl-no-market { color: #f5893c; background: #fff; border: 3px solid #ffd8bd; box-shadow: 0 5px 0 #ffd8bd; }
+
+      .il-mission-box-market { background: linear-gradient(160deg, #ffe0c4 0%, #ffcba0 100%); border-color: #fff0e2; color: #5a2f14; }
+      .il-mission-quote-market { color: #d9611c; }
+      .il-mission-grid-market .il-mission-option-market {
+        background: #fff7f0; border-color: #ffb884; color: #5a2f14; box-shadow: 0 5px 0 #ffb884;
+      }
+      .il-mission-done-market { background: #fff7f0; border-color: #ffb884; }
+
+      .il-quiz-option-market { border-color: #ffd8bd; box-shadow: 0 6px 0 #ffd8bd; color: #4a2a12; }
+      .il-quiz-complete-market {
+        background: linear-gradient(160deg, #e07a2c 0%, #c85f16 100%); border-color: #ffb168;
+      }
+      .il-badge-orb-market {
+        background: radial-gradient(circle at 35% 30%, #ffe0c4, #ff9a4d 75%); border-color: #fff2e6;
       }
 
       /* Fair Trade Stop (lesson 5) trade-stall visuals */
