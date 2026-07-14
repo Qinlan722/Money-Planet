@@ -1,0 +1,8 @@
+{
+  "name": "run-money-planet-site-driver",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "playwright": "1.61.1"
+  }
+}
