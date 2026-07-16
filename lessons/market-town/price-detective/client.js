@@ -558,7 +558,7 @@ export const clientScript = `
           : '<button type="button" class="il-btn-gold" id="il-reveal-next">下一关 →</button>') +
         "</div>" +
         (state.nextTeaser
-          ? '<div class="il-next-teaser">🎯 下一关即将开放，敬请期待！</div>'
+          ? '<div class="il-next-teaser"><a href="/lesson/lesson-market-signs?level=explorer" style="color:#ffe9a8;">📢 下一关：广告会说话 Ads Can Talk →</a></div>'
           : "") +
         "</div>";
     }

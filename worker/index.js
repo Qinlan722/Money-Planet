@@ -17,6 +17,8 @@ import { renderKindNoBody } from "../lessons/choice-forest/kind-no/page.js";
 import { renderSpendingPlanBody } from "../lessons/budget-city/spending-plan/page.js";
 import { renderPriceDetectiveBody } from "../lessons/market-town/price-detective/page.js";
 import { renderTrackSpendingBody } from "../lessons/budget-city/track-spending/page.js";
+import { renderAdsCanTalkBody } from "../lessons/market-town/ads-can-talk/page.js";
+import { renderBargainingBody } from "../lessons/market-town/bargaining/page.js";
 
 const INTERACTIVE_LESSON_RENDERERS = {
   "lesson-money-is": renderInteractiveLessonBody,
@@ -28,6 +30,8 @@ const INTERACTIVE_LESSON_RENDERERS = {
   "lesson-spending-plan": renderSpendingPlanBody,
   "lesson-price-compare": renderPriceDetectiveBody,
   "lesson-track-spending": renderTrackSpendingBody,
+  "lesson-market-signs": renderAdsCanTalkBody,
+  "lesson-bargaining": renderBargainingBody,
 };
 
 const planets = [
@@ -387,6 +391,21 @@ const lessons = [
     missionZh: "设计一张诚实广告：介绍一样物品的优点，也写一个需要注意的地方。",
     badgeZh: "广告观察员徽章",
     keyConcepts: ["广告 Ads", "事实 Fact", "吸引 Attention"],
+  },
+  {
+    id: "lesson-bargaining",
+    planetId: "market-town",
+    titleZh: "讨价还价的学问",
+    titleEn: "The Art of Bargaining",
+    ageLevel: "9-11 岁 / Explorer",
+    storyZh: "米米看中一个手工风筝，摊主开价 30 元。米米只带了 20 元，她该怎么办？",
+    bigIdeaZh: "讨价还价不是吵架，而是礼貌地寻找双方都满意的价格。",
+    tryItZh: "和家人练习一句礼貌还价的话：老板，这个可以便宜一点吗？谢谢！",
+    realWorldZh: "买东西时，礼貌地说明理由（比如多买一点），摊主更愿意商量价格。",
+    quizZh: ["还价时应该怎么开口？", "摊主说“这已经是最低价”，你该怎么办？", "好的还价结果应该是？"],
+    missionZh: "和家人一起去买东西时，礼貌地试着还一次价，记下摊主的反应。",
+    badgeZh: "议价小达人徽章",
+    keyConcepts: ["价格 Price", "尊重 Respect", "双赢 Win-Win"],
   },
   {
     id: "lesson-good-deal",

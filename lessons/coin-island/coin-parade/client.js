@@ -618,7 +618,7 @@ export const clientScript = `
         '<button type="button" class="il-btn-gold" id="il-next-level">下一关 →</button>' +
         "</div>";
       if (state.nextTeaser) {
-        html += '<div class="il-next-teaser">🏙️ 下一关：预算城 Budget City · 即将开放，敬请期待！</div>';
+        html += '<div class="il-next-teaser"><a href="/lesson/lesson-fair-trade?level=explorer" style="color:#ffe9a8;">🤝 下一关：公平交换小站 Fair Trade Stop →</a></div>';
       }
       html += "</div>";
     }

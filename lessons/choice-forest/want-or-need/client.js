@@ -557,7 +557,7 @@ export const clientScript = `
         '<div class="il-badge-note" style="color:#c3e6cf;">今天你学会了：需要是离不开的、想要可以排队等待、答案会随时间改变。</div>' +
         '<div class="il-actions">' +
         '<button type="button" class="il-btn-ghost" id="il-restart-all">🔁 从头再玩一次</button>' +
-        '<div class="il-next-teaser">🏙️ 下一关：预算城 Budget City · 即将开放，敬请期待！</div>' +
+        '<div class="il-next-teaser"><a href="/lesson/lesson-kind-no?level=explorer" style="color:#ffe9a8;">🌸 下一关：温柔地说“不” A Kind No →</a></div>' +
         "</div></div>";
     }
     stageEl.innerHTML = html;

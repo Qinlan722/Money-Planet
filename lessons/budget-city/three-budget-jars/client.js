@@ -525,7 +525,7 @@ export const clientScript = `
           : '<button type="button" class="il-btn-gold" id="il-reveal-next">下一关 →</button>') +
         "</div>" +
         (state.nextTeaser
-          ? '<div class="il-next-teaser">🎯 下一关：目标山 Goal Mountain · 即将开放，敬请期待！</div>'
+          ? '<div class="il-next-teaser"><a href="/lesson/lesson-spending-plan?level=explorer" style="color:#ffe9a8;">🗓️ 下一关：我的一周小计划 My Weekly Money Plan →</a></div>'
           : "") +
         "</div>";
     }
